@@ -30,12 +30,15 @@ var currentLang = 'en';
 
 // Timers
 var trackingInterval = null;
+var displayInterval = null;
 var idleCheckInterval = null;
 var sessionStartTime = null;
 var lastProjectPath = '';
+var lastProjectInfo = null;
 
 // Constants
-var POLL_INTERVAL_MS = 2000;
+var POLL_INTERVAL_MS = 2000;      // Project status check
+var DISPLAY_INTERVAL_MS = 1000;   // Timer display update
 var IDLE_CHECK_INTERVAL_MS = 60000;
 
 /**
@@ -143,8 +146,27 @@ function startTracking() {
     // Initial check
     checkProject();
 
-    // Poll for changes
+    // Poll for project changes (heavier - ExtendScript call)
     trackingInterval = setInterval(checkProject, POLL_INTERVAL_MS);
+
+    // Update display more frequently (lightweight)
+    displayInterval = setInterval(updateTimerDisplay, DISPLAY_INTERVAL_MS);
+}
+
+/**
+ * Update timer display only (lightweight, every second)
+ */
+function updateTimerDisplay() {
+    if (sessionStartTime && lastProjectInfo) {
+        var elapsed = new Date().getTime() - sessionStartTime.getTime();
+        timeDisplay.textContent = formatDuration(elapsed);
+
+        // Update total time
+        var todayTotal = getTodayTotalTime(lastProjectInfo.path) + elapsed;
+        if (totalTime) {
+            totalTime.textContent = formatDurationShort(todayTotal);
+        }
+    }
 }
 
 /**
@@ -157,6 +179,8 @@ function checkProject() {
 
             if (info.isOpen && info.path) {
                 // Project is open
+                lastProjectInfo = info;
+
                 if (info.path !== lastProjectPath) {
                     // New project or first detection
                     if (currentSession) {
