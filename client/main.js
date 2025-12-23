@@ -173,7 +173,7 @@ function toggleTracking() {
     } else {
         // Try to start tracking with retries
         console.log('Manual start tracking - checking project...');
-        tryDetectProject(3, 500); // 3 attempts, 500ms between each
+        tryDetectProject(5, 1000); // 5 attempts, 1 second between each (for NAS)
     }
 }
 
@@ -199,10 +199,11 @@ function tryDetectProject(retriesLeft, delayMs) {
                     tryDetectProject(retriesLeft - 1, delayMs);
                 }, delayMs);
             } else {
-                // All retries exhausted
+                // All retries exhausted - show debug info
                 console.log('No project detected after all retries');
                 console.log('Debug info:', info.debug || 'none');
-                alert(t('noProjectOpen') || 'No project open');
+                var msg = (t('noProjectOpen') || 'No project open') + '\n\nDebug: ' + (info.debug || 'Unknown');
+                alert(msg);
             }
         } catch (e) {
             console.error('Error parsing result:', e, 'Raw result:', result);

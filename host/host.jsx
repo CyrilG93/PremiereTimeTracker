@@ -12,28 +12,42 @@
  */
 function getProjectInfo() {
     try {
-        // Multiple ways to check if project is open
-        var hasProject = false;
-        var projectPath = "";
+        // Collect debug info
+        var debugInfo = [];
+        debugInfo.push("app exists: " + (typeof app !== 'undefined'));
+        debugInfo.push("app.project exists: " + (app && typeof app.project !== 'undefined'));
 
-        // Method 1: Check app.project.path
-        if (app.project && app.project.path && app.project.path.length > 0) {
-            hasProject = true;
+        if (!app || !app.project) {
+            return JSON.stringify({
+                isOpen: false,
+                path: "",
+                fileName: "",
+                folderName: "",
+                fullLocation: "",
+                debug: debugInfo.join("; ")
+            });
+        }
+
+        // Collect all available project properties
+        var projectPath = "";
+        var projectName = "";
+
+        try { debugInfo.push("path: " + (app.project.path || "null")); } catch (e) { debugInfo.push("path error: " + e); }
+        try { debugInfo.push("name: " + (app.project.name || "null")); } catch (e) { debugInfo.push("name error: " + e); }
+        try { debugInfo.push("documentID: " + (app.project.documentID || "null")); } catch (e) { }
+
+        // Try to get path - multiple approaches
+        if (app.project.path && app.project.path.length > 0) {
             projectPath = app.project.path;
         }
-        // Method 2: Check app.project.name (might work when path doesn't)
-        else if (app.project && app.project.name && app.project.name.length > 0) {
-            hasProject = true;
-            // Try to get path from documentID or other properties
-            if (app.project.documentID) {
-                projectPath = app.project.name;
-            }
+
+        // Get name as fallback
+        if (app.project.name && app.project.name.length > 0) {
+            projectName = app.project.name;
         }
-        // Method 3: Check active sequence's project
-        else if (app.project && app.project.activeSequence) {
-            hasProject = true;
-            projectPath = app.project.name || "Unknown";
-        }
+
+        // If no path but has name, consider it open
+        var hasProject = (projectPath.length > 0) || (projectName.length > 0);
 
         if (!hasProject) {
             return JSON.stringify({
@@ -42,11 +56,14 @@ function getProjectInfo() {
                 fileName: "",
                 folderName: "",
                 fullLocation: "",
-                debug: "No project detected via path/name/sequence"
+                debug: debugInfo.join("; ")
             });
         }
 
-        var projectPath = app.project.path;
+        // Use name if path is empty (NAS workaround)
+        if (!projectPath && projectName) {
+            projectPath = projectName;
+        }
 
         // Determine path separator based on OS
         var separator = "/";
