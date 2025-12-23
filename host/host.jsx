@@ -57,17 +57,23 @@ function getProjectInfo() {
             folderName = cleanParts[cleanParts.length - 2];
         }
 
-        // Get full location (drive/partition + project folder)
-        // Example: EDITING 2025/01 16 Beyond-Comms
+        // Get full location (partition + project path)
+        // Example: EDITING 2025/12 DECEMBER/12 19 Recording Loic Tassel
+        // Skip: Volumes on Mac, drive letter on Windows
         var fullLocation = "";
         if (cleanParts.length >= 3) {
-            // Take from first meaningful folder to the project folder
-            // Skip drive letter on Windows (e.g., "C:")
             var startIndex = 0;
+
+            // Skip "Volumes" on Mac
+            if ($.os.indexOf("Windows") === -1 && cleanParts[0] === "Volumes") {
+                startIndex = 1;
+            }
+            // Skip drive letter on Windows (e.g., "C:")
             if ($.os.indexOf("Windows") !== -1 && cleanParts[0].indexOf(":") !== -1) {
                 startIndex = 1;
             }
-            // Take relevant parts for location display
+
+            // Take from startIndex to 2 levels before the file (exclude PROJET folder and .prproj file)
             var locationParts = [];
             for (var j = startIndex; j < cleanParts.length - 2; j++) {
                 locationParts.push(cleanParts[j]);

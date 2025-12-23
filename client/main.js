@@ -196,11 +196,14 @@ function checkProject() {
                 updateDisplay(info);
 
             } else {
-                // No project open
+                // No project open - this should trigger when returning to project selection
+                console.log('No project detected. isOpen:', info.isOpen, 'path:', info.path);
                 if (currentSession) {
+                    console.log('Ending session for:', currentSession.projectName);
                     endSession();
                 }
                 lastProjectPath = '';
+                lastProjectInfo = null;
                 showNoProject();
             }
         } catch (e) {
@@ -469,10 +472,11 @@ function formatTime12h(date) {
 }
 
 /**
- * Format date for filename
+ * Format date and time for filename
  */
 function formatDateForFilename(date) {
-    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) +
+        '_' + pad(date.getHours()) + '-' + pad(date.getMinutes());
 }
 
 /**
