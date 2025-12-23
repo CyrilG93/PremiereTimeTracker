@@ -147,7 +147,11 @@ function getProjectInfo() {
  */
 function isProjectOpen() {
     try {
+        // Check both path and name for NAS compatibility
         if (app.project && app.project.path && app.project.path.length > 0) {
+            return "true";
+        }
+        if (app.project && app.project.name && app.project.name.length > 0) {
             return "true";
         }
         return "false";

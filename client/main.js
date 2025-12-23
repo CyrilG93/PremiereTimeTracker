@@ -39,7 +39,7 @@ var lastProjectInfo = null;
 // Constants
 var POLL_INTERVAL_MS = 2000;      // Project status check
 var DISPLAY_INTERVAL_MS = 1000;   // Timer display update
-var IDLE_CHECK_INTERVAL_MS = 60000;
+var IDLE_CHECK_INTERVAL_MS = 30000; // Check for idle state every 30 seconds
 
 /**
  * Initialize the extension
@@ -695,18 +695,40 @@ function clearAllDataWithConfirmation() {
 }
 
 /**
- * Idle detection
+ * Idle detection - shows alert when project is open but not being tracked
  */
+var idleStartTime = null;
+
 function startIdleDetection() {
+    // Check every 30 seconds
     idleCheckInterval = setInterval(checkIdleState, IDLE_CHECK_INTERVAL_MS);
 }
 
 function checkIdleState() {
     // Check if project is open but no active session
     csInterface.evalScript('isProjectOpen()', function (result) {
+        console.log('Idle check - project open:', result, 'session active:', !!currentSession);
+
         if (result === 'true' && !currentSession) {
-            // Project open but not tracked - check idle timeout
-            showIdleAlert();
+            // Project open but not tracked
+            if (!idleStartTime) {
+                idleStartTime = new Date();
+                console.log('Idle timer started');
+            }
+
+            // Check if idle timeout exceeded
+            var idleMs = new Date().getTime() - idleStartTime.getTime();
+            var timeoutMs = settings.idleTimeout * 60 * 1000; // Convert minutes to ms
+
+            console.log('Idle time:', Math.floor(idleMs / 1000), 's, timeout:', settings.idleTimeout, 'min');
+
+            if (idleMs >= timeoutMs) {
+                showIdleAlert();
+            }
+        } else {
+            // Reset idle timer when tracking or no project
+            idleStartTime = null;
+            idleAlert.classList.remove('show');
         }
     });
 }
