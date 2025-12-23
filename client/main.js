@@ -107,7 +107,21 @@ function loadData() {
         var data = localStorage.getItem(STORAGE_KEY);
         if (data) {
             var parsed = JSON.parse(data);
-            sessions = parsed.sessions || [];
+
+            // Validate sessions array
+            if (Array.isArray(parsed.sessions)) {
+                // Filter out any corrupted sessions (missing required fields)
+                sessions = parsed.sessions.filter(function (s) {
+                    return s && s.id && s.openTime;
+                });
+                if (sessions.length !== parsed.sessions.length) {
+                    console.warn('Removed', parsed.sessions.length - sessions.length, 'corrupted session(s)');
+                }
+            } else {
+                sessions = [];
+            }
+
+            // Load settings with defaults
             settings = Object.assign(settings, parsed.settings || {});
         }
         // Apply settings to UI
@@ -115,8 +129,13 @@ function loadData() {
         idleTimeoutInput.value = settings.idleTimeout;
         languageSelect.value = settings.language;
         currentLang = settings.language;
+
+        console.log('Data loaded:', sessions.length, 'sessions');
     } catch (e) {
-        console.error('Error loading data:', e);
+        console.error('Error loading data, resetting:', e);
+        // Reset corrupted data
+        sessions = [];
+        localStorage.removeItem(STORAGE_KEY);
     }
 }
 
