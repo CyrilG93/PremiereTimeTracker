@@ -4,6 +4,7 @@
     "noDataToExport": "Aucune donnée à exporter",
     "exportSuccess": "Export réussi !",
     "exportError": "Échec de l'export : ",
+    "noProjectOpen": "Aucun projet ouvert",
     "confirmClear": "Êtes-vous sûr de vouloir supprimer toutes les données de suivi ?",
     "idleWarning": "Projet non suivi !",
     "settings": {

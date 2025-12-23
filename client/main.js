@@ -15,7 +15,7 @@ var STORAGE_KEY = 'timeTracker_data';
 // DOM elements
 var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
-var idleAlert, dismissIdleBtn;
+var idleAlert, dismissIdleBtn, mainDisplay;
 
 // State
 var currentSession = null;
@@ -59,6 +59,7 @@ function init() {
     clearAfterExportBtn = document.getElementById('clearAfterExportBtn');
     idleAlert = document.getElementById('idleAlert');
     dismissIdleBtn = document.getElementById('dismissIdleBtn');
+    mainDisplay = document.getElementById('mainDisplay');
 
     // Load saved data
     loadData();
@@ -80,6 +81,11 @@ function init() {
         clearAfterExportBtn.addEventListener('click', clearAllDataWithConfirmation);
     }
     dismissIdleBtn.addEventListener('click', dismissIdleAlert);
+
+    // Click on timer to manually toggle tracking
+    if (mainDisplay) {
+        mainDisplay.addEventListener('click', toggleTracking);
+    }
 
     // Start polling for project changes
     startTracking();
@@ -151,6 +157,40 @@ function startTracking() {
 
     // Update display more frequently (lightweight)
     displayInterval = setInterval(updateTimerDisplay, DISPLAY_INTERVAL_MS);
+}
+
+/**
+ * Toggle tracking manually (click on timer)
+ */
+function toggleTracking() {
+    if (currentSession) {
+        // Stop tracking
+        console.log('Manual stop tracking');
+        endSession();
+        lastProjectPath = '';
+        lastProjectInfo = null;
+        showNoProject();
+    } else {
+        // Try to start tracking by forcing a project check
+        console.log('Manual start tracking - checking project...');
+        csInterface.evalScript('getProjectInfo()', function (result) {
+            try {
+                var info = JSON.parse(result);
+                if (info.isOpen && info.path) {
+                    console.log('Project found:', info.folderName);
+                    lastProjectInfo = info;
+                    startSession(info);
+                    lastProjectPath = info.path;
+                    updateDisplay(info);
+                } else {
+                    console.log('No project open to track');
+                    alert(t('noProjectOpen') || 'No project open');
+                }
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        });
+    }
 }
 
 /**
