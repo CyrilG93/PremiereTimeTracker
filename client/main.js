@@ -132,8 +132,9 @@ function loadData() {
 
         console.log('Data loaded:', sessions.length, 'sessions');
     } catch (e) {
-        console.error('Error loading data, resetting:', e);
-        // Reset corrupted data
+        console.error('Error loading data:', e);
+        // Warn user before resetting corrupted data
+        alert('⚠️ Données corrompues détectées.\nLes données de tracking ont été réinitialisées.\n\nErreur: ' + e.message);
         sessions = [];
         localStorage.removeItem(STORAGE_KEY);
     }
