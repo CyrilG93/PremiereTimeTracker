@@ -10,7 +10,8 @@
     "settings": {
         "title": "Paramètres",
         "merge": "Fusionner même jour",
-        "idle": "Alerte inactivité (min)",
+        "autoPause": "Auto-pause",
+        "idleTimeout": "Délai (min)",
         "language": "Langue",
         "clearData": "Effacer Données"
     }

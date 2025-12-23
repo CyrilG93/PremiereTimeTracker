@@ -10,7 +10,8 @@
     "settings": {
         "title": "Settings",
         "merge": "Merge same day",
-        "idle": "Idle alert (min)",
+        "autoPause": "Auto-pause",
+        "idleTimeout": "Timeout (min)",
         "language": "Language",
         "clearData": "Clear All Data"
     }

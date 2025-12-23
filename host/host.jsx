@@ -174,3 +174,35 @@ function getProjectPath() {
         return "";
     }
 }
+
+/**
+ * Get project state for activity detection
+ * Returns a hash of project state to detect changes
+ * @returns {string} State hash or empty string
+ */
+function getProjectState() {
+    try {
+        var state = [];
+
+        // Get active sequence playhead position
+        if (app.project && app.project.activeSequence) {
+            var seq = app.project.activeSequence;
+            state.push("pos:" + seq.getPlayerPosition().ticks);
+            state.push("seq:" + seq.name);
+        }
+
+        // Get sequence count
+        if (app.project && app.project.sequences) {
+            state.push("seqCount:" + app.project.sequences.numSequences);
+        }
+
+        // Get project item count (rough indicator of changes)
+        if (app.project && app.project.rootItem && app.project.rootItem.children) {
+            state.push("items:" + app.project.rootItem.children.numItems);
+        }
+
+        return state.join("|");
+    } catch (e) {
+        return "error:" + e.toString();
+    }
+}

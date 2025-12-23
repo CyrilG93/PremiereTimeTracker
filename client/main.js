@@ -15,13 +15,14 @@ var STORAGE_KEY = 'timeTracker_data';
 // DOM elements
 var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
-var idleAlert, dismissIdleBtn, mainDisplay;
+var idleAlert, dismissIdleBtn, mainDisplay, autoPauseCheckbox;
 
 // State
 var currentSession = null;
 var sessions = [];
 var settings = {
     mergeEntries: false,
+    autoPause: true,
     idleTimeout: 30,
     language: 'en'
 };
@@ -40,6 +41,12 @@ var lastProjectInfo = null;
 var POLL_INTERVAL_MS = 2000;      // Project status check
 var DISPLAY_INTERVAL_MS = 1000;   // Timer display update
 var IDLE_CHECK_INTERVAL_MS = 30000; // Check for idle state every 30 seconds
+var ACTIVITY_CHECK_INTERVAL_MS = 10000; // Check activity every 10 seconds
+
+// Activity detection
+var lastProjectState = '';
+var lastActivityTime = null;
+var activityCheckInterval = null;
 
 /**
  * Initialize the extension
@@ -74,6 +81,10 @@ function init() {
     settingsBtn.addEventListener('click', showSettings);
     closeSettingsBtn.addEventListener('click', hideSettings);
     mergeEntriesCheckbox.addEventListener('change', saveSettings);
+    autoPauseCheckbox = document.getElementById('autoPause');
+    if (autoPauseCheckbox) {
+        autoPauseCheckbox.addEventListener('change', saveSettings);
+    }
     idleTimeoutInput.addEventListener('change', saveSettings);
     languageSelect.addEventListener('change', onLanguageChange);
     clearDataBtn.addEventListener('click', clearAllData);
@@ -92,6 +103,9 @@ function init() {
 
     // Start idle detection
     startIdleDetection();
+
+    // Start activity detection (for auto-pause)
+    startActivityDetection();
 
     // Handle panel close
     csInterface.addEventListener('com.adobe.csxs.events.WindowVisibilityChanged', onPanelVisibilityChange);
@@ -126,6 +140,9 @@ function loadData() {
         }
         // Apply settings to UI
         mergeEntriesCheckbox.checked = settings.mergeEntries;
+        if (autoPauseCheckbox) {
+            autoPauseCheckbox.checked = settings.autoPause !== false; // Default true
+        }
         idleTimeoutInput.value = settings.idleTimeout;
         languageSelect.value = settings.language;
         currentLang = settings.language;
@@ -160,6 +177,9 @@ function saveData() {
  */
 function saveSettings() {
     settings.mergeEntries = mergeEntriesCheckbox.checked;
+    if (autoPauseCheckbox) {
+        settings.autoPause = autoPauseCheckbox.checked;
+    }
     settings.idleTimeout = parseInt(idleTimeoutInput.value, 10) || 30;
     settings.language = languageSelect.value;
     saveData();
@@ -761,6 +781,52 @@ function dismissIdleAlert() {
     idleAlert.classList.remove('show');
     // Try to detect project again
     checkProject();
+}
+
+/**
+ * Activity detection - auto-pause when no activity in Premiere
+ */
+function startActivityDetection() {
+    // Reset activity time when starting
+    lastActivityTime = new Date();
+    lastProjectState = '';
+
+    // Check activity every 10 seconds
+    activityCheckInterval = setInterval(checkActivity, ACTIVITY_CHECK_INTERVAL_MS);
+}
+
+function checkActivity() {
+    // Only check if auto-pause is enabled and we're tracking
+    if (!settings.autoPause || !currentSession) {
+        return;
+    }
+
+    csInterface.evalScript('getProjectState()', function (result) {
+        console.log('Activity check - state:', result);
+
+        if (result && result !== lastProjectState) {
+            // State changed - there's activity
+            lastProjectState = result;
+            lastActivityTime = new Date();
+            console.log('Activity detected, timer reset');
+        } else {
+            // No change - check if timeout exceeded
+            var inactiveMs = new Date().getTime() - lastActivityTime.getTime();
+            var timeoutMs = settings.idleTimeout * 60 * 1000;
+
+            console.log('Inactive for:', Math.floor(inactiveMs / 1000), 's');
+
+            if (inactiveMs >= timeoutMs) {
+                // Auto-pause: end the session
+                console.log('Auto-pause: no activity for', settings.idleTimeout, 'minutes');
+                alert('⏸️ Auto-pause: Aucune activité depuis ' + settings.idleTimeout + ' minutes.\nLe chrono a été arrêté.');
+                endSession();
+                lastProjectPath = '';
+                lastProjectInfo = null;
+                showNoProject();
+            }
+        }
+    });
 }
 
 /**
