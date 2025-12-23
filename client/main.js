@@ -93,11 +93,6 @@ function init() {
     }
     dismissIdleBtn.addEventListener('click', dismissIdleAlert);
 
-    // Click on timer to manually toggle tracking
-    if (mainDisplay) {
-        mainDisplay.addEventListener('click', toggleTracking);
-    }
-
     // Start polling for project changes
     startTracking();
 
