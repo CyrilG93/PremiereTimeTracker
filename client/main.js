@@ -171,26 +171,48 @@ function toggleTracking() {
         lastProjectInfo = null;
         showNoProject();
     } else {
-        // Try to start tracking by forcing a project check
+        // Try to start tracking with retries
         console.log('Manual start tracking - checking project...');
-        csInterface.evalScript('getProjectInfo()', function (result) {
-            try {
-                var info = JSON.parse(result);
-                if (info.isOpen && info.path) {
-                    console.log('Project found:', info.folderName);
-                    lastProjectInfo = info;
-                    startSession(info);
-                    lastProjectPath = info.path;
-                    updateDisplay(info);
-                } else {
-                    console.log('No project open to track');
-                    alert(t('noProjectOpen') || 'No project open');
-                }
-            } catch (e) {
-                console.error('Error:', e);
-            }
-        });
+        tryDetectProject(3, 500); // 3 attempts, 500ms between each
     }
+}
+
+/**
+ * Try to detect project with retries
+ */
+function tryDetectProject(retriesLeft, delayMs) {
+    csInterface.evalScript('getProjectInfo()', function (result) {
+        try {
+            console.log('Detection attempt, retries left:', retriesLeft, 'result:', result);
+            var info = JSON.parse(result);
+
+            if (info.isOpen && info.path) {
+                console.log('Project found:', info.folderName);
+                lastProjectInfo = info;
+                startSession(info);
+                lastProjectPath = info.path;
+                updateDisplay(info);
+            } else if (retriesLeft > 0) {
+                // Retry after delay
+                console.log('Project not detected, retrying in', delayMs, 'ms...');
+                setTimeout(function () {
+                    tryDetectProject(retriesLeft - 1, delayMs);
+                }, delayMs);
+            } else {
+                // All retries exhausted
+                console.log('No project detected after all retries');
+                console.log('Debug info:', info.debug || 'none');
+                alert(t('noProjectOpen') || 'No project open');
+            }
+        } catch (e) {
+            console.error('Error parsing result:', e, 'Raw result:', result);
+            if (retriesLeft > 0) {
+                setTimeout(function () {
+                    tryDetectProject(retriesLeft - 1, delayMs);
+                }, delayMs);
+            }
+        }
+    });
 }
 
 /**

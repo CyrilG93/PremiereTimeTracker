@@ -12,14 +12,37 @@
  */
 function getProjectInfo() {
     try {
-        // Check if a project is open
-        if (!app.project || !app.project.path) {
+        // Multiple ways to check if project is open
+        var hasProject = false;
+        var projectPath = "";
+
+        // Method 1: Check app.project.path
+        if (app.project && app.project.path && app.project.path.length > 0) {
+            hasProject = true;
+            projectPath = app.project.path;
+        }
+        // Method 2: Check app.project.name (might work when path doesn't)
+        else if (app.project && app.project.name && app.project.name.length > 0) {
+            hasProject = true;
+            // Try to get path from documentID or other properties
+            if (app.project.documentID) {
+                projectPath = app.project.name;
+            }
+        }
+        // Method 3: Check active sequence's project
+        else if (app.project && app.project.activeSequence) {
+            hasProject = true;
+            projectPath = app.project.name || "Unknown";
+        }
+
+        if (!hasProject) {
             return JSON.stringify({
                 isOpen: false,
                 path: "",
                 fileName: "",
                 folderName: "",
-                fullLocation: ""
+                fullLocation: "",
+                debug: "No project detected via path/name/sequence"
             });
         }
 
