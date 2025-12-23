@@ -486,13 +486,16 @@ function exportToCSV() {
     // Generate CSV content
     var csv = generateCSV(exportSessions);
 
-    // Download file with session count in filename
-    var filename = 'TimeTracker_' + exportSessions.length + 'sessions_' + formatDateForFilename(new Date()) + '.csv';
+    // Download file
+    var filename = 'TimeTracker_' + formatDateForFilename(new Date()) + '.csv';
     downloadCSV(csv, filename, exportSessions.length);
 }
 
 /**
  * Merge sessions by project and day
+ * - Keep earliest open time
+ * - Calculate close time as: earliest open + total duration
+ * - Sum all durations
  */
 function mergeSessionsByDay(sessions) {
     var merged = {};
@@ -506,11 +509,19 @@ function mergeSessionsByDay(sessions) {
         } else {
             // Add duration
             merged[key].duration += session.duration;
-            // Update close time to latest
-            if (session.closeTime > merged[key].closeTime) {
-                merged[key].closeTime = session.closeTime;
+            // Keep earliest open time
+            if (session.openTime < merged[key].openTime) {
+                merged[key].openTime = session.openTime;
             }
         }
+    });
+
+    // Calculate close time as open time + total duration
+    Object.keys(merged).forEach(function (key) {
+        var session = merged[key];
+        var openDate = new Date(session.openTime);
+        var closeDate = new Date(openDate.getTime() + session.duration);
+        session.closeTime = closeDate.toISOString();
     });
 
     return Object.values(merged);
