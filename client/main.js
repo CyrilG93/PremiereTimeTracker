@@ -353,6 +353,8 @@ function generateId() {
  * Export sessions to CSV
  */
 function exportToCSV() {
+    console.log('Export called. Saved sessions:', sessions.length);
+
     if (sessions.length === 0 && !currentSession) {
         alert(t('noDataToExport') || 'No data to export');
         return;
@@ -367,16 +369,20 @@ function exportToCSV() {
         exportSessions.push(tempSession);
     }
 
+    console.log('Sessions to export:', exportSessions.length);
+
     // Optionally merge entries
     if (settings.mergeEntries) {
         exportSessions = mergeSessionsByDay(exportSessions);
+        console.log('After merge:', exportSessions.length);
     }
 
     // Generate CSV content
     var csv = generateCSV(exportSessions);
 
-    // Download file
-    downloadCSV(csv, 'TimeTracker_Export_' + formatDateForFilename(new Date()) + '.csv');
+    // Download file with session count in filename
+    var filename = 'TimeTracker_' + exportSessions.length + 'sessions_' + formatDateForFilename(new Date()) + '.csv';
+    downloadCSV(csv, filename, exportSessions.length);
 }
 
 /**
@@ -486,7 +492,7 @@ function escapeCSV(field) {
 /**
  * Download CSV file using Node.js (CEP compatible)
  */
-function downloadCSV(content, filename) {
+function downloadCSV(content, filename, sessionCount) {
     try {
         var fs = require('fs');
         var os = require('os');
@@ -498,7 +504,9 @@ function downloadCSV(content, filename) {
 
         fs.writeFileSync(filePath, content, 'utf8');
 
-        alert((t('exportSuccess') || 'Export successful!') + '\n\n' + filePath);
+        var msg = (t('exportSuccess') || 'Export successful!') + '\n' +
+            (sessionCount || 0) + ' sessions\n\n' + filePath;
+        alert(msg);
         console.log('CSV exported to:', filePath);
 
     } catch (e) {
