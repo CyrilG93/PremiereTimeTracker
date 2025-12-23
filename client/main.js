@@ -162,11 +162,22 @@ function loadData() {
  */
 function saveData() {
     try {
+        // Filter out any sessions with invalid duration before saving
+        var validSessions = sessions.filter(function (s) {
+            return s && s.id && s.openTime && s.duration > 0;
+        });
+
+        if (validSessions.length !== sessions.length) {
+            console.warn('Filtered out', sessions.length - validSessions.length, 'invalid session(s) before save');
+            sessions = validSessions; // Update in-memory too
+        }
+
         var data = {
-            sessions: sessions,
+            sessions: validSessions,
             settings: settings
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        console.log('Data saved:', validSessions.length, 'sessions');
     } catch (e) {
         console.error('Error saving data:', e);
     }
@@ -339,9 +350,24 @@ function startSession(info) {
 function endSession() {
     if (!currentSession) return;
 
+    // Make sure we have a valid start time
+    if (!sessionStartTime) {
+        console.warn('endSession called without sessionStartTime, skipping save');
+        currentSession = null;
+        return;
+    }
+
     var endTime = new Date();
     currentSession.closeTime = endTime.toISOString();
     currentSession.duration = endTime.getTime() - sessionStartTime.getTime();
+
+    // Don't save sessions with 0 or negative duration
+    if (currentSession.duration <= 0) {
+        console.warn('Session has invalid duration:', currentSession.duration, ', skipping save');
+        currentSession = null;
+        sessionStartTime = null;
+        return;
+    }
 
     // Add to sessions array
     sessions.push(currentSession);
