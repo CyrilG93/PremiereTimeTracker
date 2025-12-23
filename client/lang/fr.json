@@ -2,6 +2,8 @@
     "appTitle": "Time Tracker",
     "exportBtn": "Exporter",
     "noDataToExport": "Aucune donnée à exporter",
+    "exportSuccess": "Export réussi !",
+    "exportError": "Échec de l'export : ",
     "confirmClear": "Êtes-vous sûr de vouloir supprimer toutes les données de suivi ?",
     "idleWarning": "Projet non suivi !",
     "settings": {

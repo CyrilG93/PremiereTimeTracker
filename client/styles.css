@@ -73,6 +73,12 @@ body {
     min-height: 40px;
 }
 
+.time-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
 .time-display {
     font-size: 22px;
     font-weight: 700;
@@ -84,6 +90,27 @@ body {
 
 .time-display.tracking {
     color: #00cc66;
+}
+
+.total-time {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.total-time::before {
+    content: "Σ ";
+    font-size: 10px;
+}
+
+.total-time:empty {
+    display: none;
+}
+
+.total-time:empty::before {
+    display: none;
 }
 
 .project-name {

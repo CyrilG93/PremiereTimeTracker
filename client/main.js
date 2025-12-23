@@ -13,7 +13,7 @@ var csInterface = new CSInterface();
 var STORAGE_KEY = 'timeTracker_data';
 
 // DOM elements
-var timeDisplay, projectName, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
+var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
 var idleAlert, dismissIdleBtn;
 
@@ -42,9 +42,9 @@ var IDLE_CHECK_INTERVAL_MS = 60000;
  * Initialize the extension
  */
 function init() {
-    // Get DOM elements
     timeDisplay = document.getElementById('timeDisplay');
     projectName = document.getElementById('projectName');
+    totalTime = document.getElementById('totalTime');
     exportBtn = document.getElementById('exportBtn');
     settingsBtn = document.getElementById('settingsBtn');
     settingsPanel = document.getElementById('settingsPanel');
@@ -231,6 +231,12 @@ function updateDisplay(info) {
         var elapsed = new Date().getTime() - sessionStartTime.getTime();
         timeDisplay.textContent = formatDuration(elapsed);
         timeDisplay.classList.add('tracking');
+
+        // Update total time for today
+        var todayTotal = getTodayTotalTime(info.path) + elapsed;
+        if (totalTime) {
+            totalTime.textContent = formatDurationShort(todayTotal);
+        }
     }
 
     projectName.textContent = info.folderName || info.fileName || '-';
@@ -243,6 +249,9 @@ function showNoProject() {
     timeDisplay.textContent = '00:00:00';
     timeDisplay.classList.remove('tracking');
     projectName.textContent = '-';
+    if (totalTime) {
+        totalTime.textContent = '';
+    }
 }
 
 /**
@@ -269,6 +278,37 @@ function formatDurationExport(ms) {
         return hours + 'h ' + minutes + 'm';
     }
     return minutes + 'm';
+}
+
+/**
+ * Format duration short (for total display)
+ */
+function formatDurationShort(ms) {
+    var totalMinutes = Math.floor(ms / 60000);
+    var hours = Math.floor(totalMinutes / 60);
+    var minutes = totalMinutes % 60;
+
+    if (hours > 0) {
+        return hours + 'h' + pad(minutes);
+    }
+    return minutes + 'm';
+}
+
+/**
+ * Get total time for today for a specific project
+ */
+function getTodayTotalTime(projectPath) {
+    var today = new Date().toDateString();
+    var total = 0;
+
+    sessions.forEach(function (session) {
+        var sessionDate = new Date(session.openTime).toDateString();
+        if (sessionDate === today && session.projectFile === currentSession.projectFile) {
+            total += session.duration;
+        }
+    });
+
+    return total;
 }
 
 /**
@@ -420,20 +460,40 @@ function escapeCSV(field) {
 }
 
 /**
- * Download CSV file
+ * Download CSV file using Node.js (CEP compatible)
  */
 function downloadCSV(content, filename) {
-    var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-    var link = document.createElement('a');
-    var url = URL.createObjectURL(blob);
+    try {
+        var fs = require('fs');
+        var os = require('os');
+        var path = require('path');
 
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
+        // Save to Desktop
+        var desktopPath = path.join(os.homedir(), 'Desktop');
+        var filePath = path.join(desktopPath, filename);
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        fs.writeFileSync(filePath, content, 'utf8');
+
+        alert((t('exportSuccess') || 'Export successful!') + '\n\n' + filePath);
+        console.log('CSV exported to:', filePath);
+
+    } catch (e) {
+        console.error('Export error:', e);
+        // Fallback to blob download
+        try {
+            var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
+            var url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (e2) {
+            alert((t('exportError') || 'Export failed: ') + e.message);
+        }
+    }
 }
 
 /**
