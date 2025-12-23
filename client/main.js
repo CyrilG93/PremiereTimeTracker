@@ -14,7 +14,7 @@ var STORAGE_KEY = 'timeTracker_data';
 
 // DOM elements
 var timeDisplay, projectName, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
-var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn;
+var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
 var idleAlert, dismissIdleBtn;
 
 // State
@@ -53,6 +53,7 @@ function init() {
     idleTimeoutInput = document.getElementById('idleTimeout');
     languageSelect = document.getElementById('languageSelect');
     clearDataBtn = document.getElementById('clearDataBtn');
+    clearAfterExportBtn = document.getElementById('clearAfterExportBtn');
     idleAlert = document.getElementById('idleAlert');
     dismissIdleBtn = document.getElementById('dismissIdleBtn');
 
@@ -72,6 +73,9 @@ function init() {
     idleTimeoutInput.addEventListener('change', saveSettings);
     languageSelect.addEventListener('change', onLanguageChange);
     clearDataBtn.addEventListener('click', clearAllData);
+    if (clearAfterExportBtn) {
+        clearAfterExportBtn.addEventListener('click', clearAllDataWithConfirmation);
+    }
     dismissIdleBtn.addEventListener('click', dismissIdleAlert);
 
     // Start polling for project changes
@@ -517,6 +521,17 @@ function clearAllData() {
         saveData();
         showNoProject();
         hideSettings();
+    }
+}
+
+/**
+ * Clear all data with confirmation (standalone button version)
+ */
+function clearAllDataWithConfirmation() {
+    if (confirm(t('confirmClear') || 'Are you sure you want to delete all tracking data?')) {
+        sessions = [];
+        saveData();
+        console.log('All tracking data cleared');
     }
 }
 

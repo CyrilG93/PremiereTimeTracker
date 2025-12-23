@@ -1,6 +1,6 @@
 {
     "appTitle": "Time Tracker",
-    "exportBtn": "Export CSV",
+    "exportBtn": "Export",
     "noDataToExport": "No data to export",
     "confirmClear": "Are you sure you want to delete all tracking data?",
     "idleWarning": "Project not tracked!",

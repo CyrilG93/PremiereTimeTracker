@@ -96,8 +96,15 @@ body {
     white-space: nowrap;
 }
 
+/* Button Row */
+.button-row {
+    display: flex;
+    gap: 4px;
+}
+
 /* Export Button */
 .export-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,6 +126,30 @@ body {
 }
 
 .export-btn:active {
+    transform: translateY(1px);
+}
+
+/* Clear Button */
+.clear-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+    border: 1px solid #444;
+    color: #888;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.clear-btn:hover {
+    background: linear-gradient(180deg, #4a2020 0%, #3a1a1a 100%);
+    border-color: #662020;
+    color: #ff6666;
+}
+
+.clear-btn:active {
     transform: translateY(1px);
 }
 
