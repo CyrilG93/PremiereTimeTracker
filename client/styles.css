@@ -1,0 +1,260 @@
+/* Time Tracker - Premiere Pro Extension Styles */
+/* Compact dark theme matching Premiere Pro */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #232323;
+    color: #e0e0e0;
+    font-size: 11px;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 6px;
+    gap: 4px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 2px;
+}
+
+.title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+    background: #3a3a3a;
+    color: #fff;
+}
+
+/* Main Display */
+.main-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 40px;
+}
+
+.time-display {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    color: #ff4444;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.time-display.tracking {
+    color: #00cc66;
+}
+
+.project-name {
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Export Button */
+.export-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+    border: 1px solid #444;
+    color: #e0e0e0;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.export-btn:hover {
+    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+    border-color: #555;
+}
+
+.export-btn:active {
+    transform: translateY(1px);
+}
+
+/* Settings Panel */
+.settings-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #232323;
+    display: none;
+    flex-direction: column;
+    padding: 6px;
+    z-index: 100;
+}
+
+.settings-panel.show {
+    display: flex;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #3a3a3a;
+    margin-bottom: 6px;
+}
+
+.settings-header span {
+    font-weight: 600;
+    color: #aaa;
+    font-size: 11px;
+}
+
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.setting-row label {
+    font-size: 10px;
+    color: #999;
+    flex: 1;
+}
+
+.setting-row input[type="number"],
+.setting-row select {
+    width: 60px;
+    padding: 3px 4px;
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 2px;
+    color: #e0e0e0;
+    font-size: 10px;
+}
+
+.setting-row input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #0099ff;
+}
+
+.danger-btn {
+    background: #4a2020;
+    border: 1px solid #662020;
+    color: #ff6666;
+    padding: 4px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 9px;
+    width: 100%;
+    transition: all 0.15s ease;
+}
+
+.danger-btn:hover {
+    background: #5a2525;
+}
+
+/* Idle Alert */
+.idle-alert {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    background: #4a3000;
+    border: 1px solid #665500;
+    border-radius: 3px;
+    padding: 4px 6px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #ffcc00;
+}
+
+.idle-alert.show {
+    display: flex;
+}
+
+/* Responsive adjustments for very small panels */
+@media (max-height: 100px) {
+    .container {
+        padding: 4px;
+        gap: 2px;
+    }
+
+    .time-display {
+        font-size: 18px;
+    }
+
+    .project-name {
+        display: none;
+    }
+
+    .export-btn span {
+        display: none;
+    }
+}
+
+@media (max-width: 180px) {
+    .title {
+        display: none;
+    }
+
+    .export-btn span {
+        display: none;
+    }
+}

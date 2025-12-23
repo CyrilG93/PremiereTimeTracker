@@ -1,0 +1,14 @@
+{
+    "appTitle": "Time Tracker",
+    "exportBtn": "Export CSV",
+    "noDataToExport": "No data to export",
+    "confirmClear": "Are you sure you want to delete all tracking data?",
+    "idleWarning": "Project not tracked!",
+    "settings": {
+        "title": "Settings",
+        "merge": "Merge same day",
+        "idle": "Idle alert (min)",
+        "language": "Language",
+        "clearData": "Clear All Data"
+    }
+}

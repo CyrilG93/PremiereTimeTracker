@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Compact Header -->
+        <div class="header">
+            <span class="title" data-i18n="appTitle">Time Tracker</span>
+            <div class="header-controls">
+                <button id="settingsBtn" class="icon-btn" title="Settings">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
+                            stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Display -->
+        <div class="main-display">
+            <div class="time-display" id="timeDisplay">00:00:00</div>
+            <div class="project-name" id="projectName">-</div>
+        </div>
+
+        <!-- Export Button -->
+        <button id="exportBtn" class="export-btn" data-i18n="exportBtn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Export CSV</span>
+        </button>
+
+        <!-- Settings Panel (hidden by default) -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-header">
+                <span data-i18n="settings.title">Settings</span>
+                <button id="closeSettingsBtn" class="icon-btn">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-row">
+                    <label for="mergeEntries" data-i18n="settings.merge">Merge same day</label>
+                    <input type="checkbox" id="mergeEntries">
+                </div>
+                <div class="setting-row">
+                    <label for="idleTimeout" data-i18n="settings.idle">Idle alert (min)</label>
+                    <input type="number" id="idleTimeout" min="1" max="120" value="30">
+                </div>
+                <div class="setting-row">
+                    <label for="languageSelect" data-i18n="settings.language">Language</label>
+                    <select id="languageSelect">
+                        <option value="en">🇬🇧 EN</option>
+                        <option value="fr">🇫🇷 FR</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <button id="clearDataBtn" class="danger-btn" data-i18n="settings.clearData">Clear Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Idle Alert -->
+        <div class="idle-alert" id="idleAlert">
+            <span data-i18n="idleWarning">Project not tracked!</span>
+            <button id="dismissIdleBtn" class="icon-btn">✕</button>
+        </div>
+    </div>
+
+    <script src="CSInterface.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
