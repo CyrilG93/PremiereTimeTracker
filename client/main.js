@@ -492,13 +492,31 @@ function exportToCSV() {
         return;
     }
 
-    // Include current session if active
-    var exportSessions = sessions.slice();
-    if (currentSession) {
-        var tempSession = Object.assign({}, currentSession);
-        tempSession.closeTime = new Date().toISOString();
-        tempSession.duration = new Date().getTime() - sessionStartTime.getTime();
-        exportSessions.push(tempSession);
+    // Create a deep copy of sessions to avoid modifying original data
+    var exportSessions = sessions.map(function (s) {
+        return {
+            id: s.id,
+            projectFile: s.projectFile,
+            projectName: s.projectName,
+            projectPath: s.projectPath,
+            openTime: s.openTime,
+            closeTime: s.closeTime,
+            duration: s.duration
+        };
+    });
+
+    // Include current session if active (with valid start time)
+    if (currentSession && sessionStartTime) {
+        var now = new Date();
+        exportSessions.push({
+            id: currentSession.id,
+            projectFile: currentSession.projectFile,
+            projectName: currentSession.projectName,
+            projectPath: currentSession.projectPath,
+            openTime: currentSession.openTime,
+            closeTime: now.toISOString(),
+            duration: now.getTime() - sessionStartTime.getTime()
+        });
     }
 
     console.log('Sessions to export:', exportSessions.length);
