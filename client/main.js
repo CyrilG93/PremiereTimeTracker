@@ -157,6 +157,14 @@ function loadData() {
         languageSelect.value = settings.language;
         currentLang = settings.language;
 
+        // Restore debug logs state
+        if (showLogsCheckbox) {
+            showLogsCheckbox.checked = settings.showLogs || false;
+        }
+        if (settings.showLogs && logPanel) {
+            logPanel.classList.add('show');
+        }
+
         console.log('Data loaded:', sessions.length, 'sessions');
     } catch (e) {
         console.error('Error loading data:', e);
