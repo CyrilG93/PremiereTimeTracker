@@ -510,8 +510,15 @@ function startSession(info) {
     // Extract project path - use fullLocation or extract from path
     var projectPath = info.fullLocation || '';
     if (!projectPath && info.path) {
-        // Extract path from full project path, skip Volumes and file name
-        var parts = info.path.split('/').filter(function (p) { return p && p !== 'Volumes'; });
+        // Normalize path separators (Windows uses \, Mac uses /)
+        var normalizedPath = info.path.replace(/\\/g, '/');
+
+        // Extract path from full project path
+        var parts = normalizedPath.split('/').filter(function (p) {
+            // Skip empty, Volumes (Mac), and drive letters like C: (Windows)
+            return p && p !== 'Volumes' && !/^[A-Z]:$/i.test(p);
+        });
+
         // Remove the project file name and PROJET folder if present
         if (parts.length > 0 && parts[parts.length - 1].indexOf('.prproj') !== -1) {
             parts.pop();
