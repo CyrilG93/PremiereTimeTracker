@@ -128,17 +128,28 @@ function init() {
 }
 
 /**
- * Load saved data from localStorage
+ * Get the data file path
+ */
+function getDataFilePath() {
+    var homeDir = require('os').homedir();
+    return homeDir + '/Documents/TimeTracker_data.json';
+}
+
+/**
+ * Load saved data from file (with localStorage migration)
  */
 function loadData() {
+    var fs = require('fs');
+    var dataFilePath = getDataFilePath();
+
     try {
-        var data = localStorage.getItem(STORAGE_KEY);
-        if (data) {
-            var parsed = JSON.parse(data);
+        // Try to load from file first
+        if (fs.existsSync(dataFilePath)) {
+            var fileContent = fs.readFileSync(dataFilePath, 'utf8');
+            var parsed = JSON.parse(fileContent);
 
             // Validate sessions array
             if (Array.isArray(parsed.sessions)) {
-                // Filter out any corrupted sessions (missing required fields)
                 sessions = parsed.sessions.filter(function (s) {
                     return s && s.id && s.openTime;
                 });
@@ -151,11 +162,25 @@ function loadData() {
 
             // Load settings with defaults
             settings = Object.assign(settings, parsed.settings || {});
+            log('Data loaded from file: ' + sessions.length + ' sessions');
+        } else {
+            // Try to migrate from localStorage
+            var oldData = localStorage.getItem(STORAGE_KEY);
+            if (oldData) {
+                var parsed = JSON.parse(oldData);
+                sessions = parsed.sessions || [];
+                settings = Object.assign(settings, parsed.settings || {});
+                log('Migrated ' + sessions.length + ' sessions from localStorage');
+                // Save to file and clear localStorage
+                saveData();
+                localStorage.removeItem(STORAGE_KEY);
+            }
         }
+
         // Apply settings to UI
         mergeEntriesCheckbox.checked = settings.mergeEntries;
         if (autoPauseCheckbox) {
-            autoPauseCheckbox.checked = settings.autoPause !== false; // Default true
+            autoPauseCheckbox.checked = settings.autoPause !== false;
         }
         idleTimeoutInput.value = settings.idleTimeout;
         languageSelect.value = settings.language;
@@ -172,17 +197,18 @@ function loadData() {
         console.log('Data loaded:', sessions.length, 'sessions');
     } catch (e) {
         console.error('Error loading data:', e);
-        // Warn user before resetting corrupted data
-        alert('⚠️ Données corrompues détectées.\nLes données de tracking ont été réinitialisées.\n\nErreur: ' + e.message);
+        log('Error loading data: ' + e.message, 'error');
         sessions = [];
-        localStorage.removeItem(STORAGE_KEY);
     }
 }
 
 /**
- * Save data to localStorage
+ * Save data to file
  */
 function saveData() {
+    var fs = require('fs');
+    var dataFilePath = getDataFilePath();
+
     try {
         // Filter out any sessions with invalid duration before saving
         var validSessions = sessions.filter(function (s) {
@@ -191,17 +217,20 @@ function saveData() {
 
         if (validSessions.length !== sessions.length) {
             console.warn('Filtered out', sessions.length - validSessions.length, 'invalid session(s) before save');
-            sessions = validSessions; // Update in-memory too
+            sessions = validSessions;
         }
 
         var data = {
             sessions: validSessions,
-            settings: settings
+            settings: settings,
+            lastSaved: new Date().toISOString()
         };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        console.log('Data saved:', validSessions.length, 'sessions');
+
+        fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+        console.log('Data saved to file:', validSessions.length, 'sessions');
     } catch (e) {
         console.error('Error saving data:', e);
+        log('Error saving data: ' + e.message, 'error');
     }
 }
 
