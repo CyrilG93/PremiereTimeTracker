@@ -352,8 +352,15 @@ function checkProject() {
 
             var info = JSON.parse(result);
 
-            // Check if info has valid properties
-            if (info.isOpen && info.path) {
+            // Log raw info periodically for debugging
+            if (failedChecksCount === 2) {
+                log('Raw ExtendScript response: ' + result.substring(0, 200), 'info');
+            }
+
+            // Check if info has valid properties - accept path OR name (for NAS projects)
+            var hasValidProject = info.isOpen && (info.path || info.fileName || info.folderName);
+
+            if (hasValidProject) {
                 // Project is open - reset failed checks counter
                 if (failedChecksCount > 0) {
                     log('Project recovered after ' + failedChecksCount + ' failed check(s)');
@@ -361,27 +368,30 @@ function checkProject() {
                 failedChecksCount = 0;
                 lastProjectInfo = info;
 
-                if (info.path !== lastProjectPath) {
+                // Use path or name for project identification
+                var projectId = info.path || info.fileName || info.folderName;
+
+                if (projectId !== lastProjectPath) {
                     // New project or first detection
-                    log('Project detected: ' + info.folderName);
+                    log('Project detected: ' + (info.folderName || info.fileName || 'Unknown'));
                     if (currentSession) {
                         // Close previous session
                         endSession();
                     }
                     // Start new session
                     startSession(info);
-                    lastProjectPath = info.path;
+                    lastProjectPath = projectId;
                 }
 
                 // Update display
                 updateDisplay(info);
 
-            } else if (info.isOpen === undefined || info.path === undefined) {
-                // ExtendScript returned invalid data - temporary failure
-                handleFailedCheck('Undefined values in response');
-            } else {
-                // Project explicitly closed (isOpen: false)
+            } else if (info.isOpen === false) {
+                // Project explicitly closed
                 handleFailedCheck('Project closed');
+            } else {
+                // Missing required info but might have debug info
+                handleFailedCheck('Missing project info. Debug: ' + (info.debug || 'none').substring(0, 80));
             }
         } catch (e) {
             handleFailedCheck('Parse error: ' + e.message);
