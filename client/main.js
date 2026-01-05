@@ -104,6 +104,10 @@ function init() {
     if (showLogsCheckbox) {
         showLogsCheckbox.addEventListener('change', toggleLogPanel);
     }
+    var copyLogsBtn = document.getElementById('copyLogsBtn');
+    if (copyLogsBtn) {
+        copyLogsBtn.addEventListener('click', copyLogs);
+    }
     if (clearLogsBtn) {
         clearLogsBtn.addEventListener('click', clearLogs);
     }
@@ -1024,6 +1028,22 @@ function toggleLogPanel() {
     } else {
         logPanel.classList.remove('show');
     }
+}
+
+function copyLogs() {
+    var text = logEntries.map(function (entry) {
+        return entry.time + ' [' + entry.level.toUpperCase() + '] ' + entry.message;
+    }).join('\n');
+
+    // Copy to clipboard
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    log('Logs copied to clipboard (' + logEntries.length + ' entries)');
 }
 
 function clearLogs() {
