@@ -477,11 +477,14 @@ function startSession(info) {
  * End the current session
  */
 function endSession() {
-    if (!currentSession) return;
+    if (!currentSession) {
+        log('endSession called but no current session', 'warn');
+        return;
+    }
 
     // Make sure we have a valid start time
     if (!sessionStartTime) {
-        console.warn('endSession called without sessionStartTime, skipping save');
+        log('endSession called without sessionStartTime, skipping save', 'warn');
         currentSession = null;
         return;
     }
@@ -490,9 +493,11 @@ function endSession() {
     currentSession.closeTime = endTime.toISOString();
     currentSession.duration = endTime.getTime() - sessionStartTime.getTime();
 
-    // Don't save sessions with 0 or negative duration
-    if (currentSession.duration <= 0) {
-        console.warn('Session has invalid duration:', currentSession.duration, ', skipping save');
+    log('Session ending: ' + currentSession.projectName + ', duration=' + Math.floor(currentSession.duration / 1000) + 's');
+
+    // Don't save sessions shorter than 1 second
+    if (currentSession.duration < 1000) {
+        log('Session too short (' + currentSession.duration + 'ms), skipping save', 'warn');
         currentSession = null;
         sessionStartTime = null;
         return;
@@ -500,9 +505,9 @@ function endSession() {
 
     // Add to sessions array
     sessions.push(currentSession);
-    saveData();
+    log('Session added to array. Total sessions: ' + sessions.length);
 
-    console.log('Session ended:', currentSession.projectName, formatDuration(currentSession.duration));
+    saveData();
 
     currentSession = null;
     sessionStartTime = null;
