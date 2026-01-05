@@ -216,7 +216,7 @@ function saveData() {
         });
 
         if (validSessions.length !== sessions.length) {
-            console.warn('Filtered out', sessions.length - validSessions.length, 'invalid session(s) before save');
+            log('Filtered out ' + (sessions.length - validSessions.length) + ' invalid session(s)', 'warn');
             sessions = validSessions;
         }
 
@@ -227,10 +227,10 @@ function saveData() {
         };
 
         fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
-        console.log('Data saved to file:', validSessions.length, 'sessions');
+        log('Data saved: ' + validSessions.length + ' sessions to ' + dataFilePath);
     } catch (e) {
         console.error('Error saving data:', e);
-        log('Error saving data: ' + e.message, 'error');
+        log('ERROR saving data: ' + e.message + ' - Path: ' + dataFilePath, 'error');
     }
 }
 
@@ -376,12 +376,29 @@ function checkProject() {
                 }
                 failedChecksCount = 0;
 
+                // Extract clean project name from path if needed
+                var cleanFolderName = folderName || '';
+                if (cleanFolderName.indexOf('/') !== -1) {
+                    // If folderName contains path separator, extract the project folder name
+                    var parts = cleanFolderName.split('/');
+                    // Look for a meaningful folder name (not PROJET, not Volumes)
+                    for (var i = parts.length - 1; i >= 0; i--) {
+                        if (parts[i] && parts[i] !== 'PROJET' && parts[i] !== 'Volumes' && parts[i].indexOf('.') === -1) {
+                            cleanFolderName = parts[i];
+                            break;
+                        }
+                    }
+                }
+                if (!cleanFolderName && projectName) {
+                    cleanFolderName = projectName.replace('.prproj', '');
+                }
+
                 // Create normalized info object
                 var normalizedInfo = {
                     isOpen: true,
                     path: projectPath || projectName,
                     fileName: projectName,
-                    folderName: folderName || projectName.replace('.prproj', ''),
+                    folderName: cleanFolderName,
                     fullLocation: info.fullLocation || ''
                 };
                 lastProjectInfo = normalizedInfo;
