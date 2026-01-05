@@ -135,8 +135,9 @@ function init() {
  * Get the data file path
  */
 function getDataFilePath() {
-    var homeDir = require('os').homedir();
-    return homeDir + '/Documents/TimeTracker_data.json';
+    var os = require('os');
+    var path = require('path');
+    return path.join(os.homedir(), 'Documents', 'TimeTracker_data.json');
 }
 
 /**
