@@ -306,6 +306,8 @@ function updateTimerDisplay() {
  */
 var checkProjectRetries = 0;
 var CHECK_PROJECT_MAX_RETRIES = 3;
+var failedChecksCount = 0;
+var FAILED_CHECKS_THRESHOLD = 3; // Require 3 consecutive failures before closing
 
 function checkProject() {
     csInterface.evalScript('getProjectInfo()', function (result) {
@@ -321,15 +323,9 @@ function checkProject() {
                     setTimeout(checkProject, 1000);
                     return;
                 }
-                // Max retries reached, show no project
-                log('Max retries reached, no project detected', 'warn');
+                // Max retries reached, increment failed checks
                 checkProjectRetries = 0;
-                if (currentSession) {
-                    endSession();
-                }
-                lastProjectPath = '';
-                lastProjectInfo = null;
-                showNoProject();
+                handleFailedCheck();
                 return;
             }
 
@@ -338,8 +334,10 @@ function checkProject() {
 
             var info = JSON.parse(result);
 
+            // Check if info has valid properties (handle undefined case)
             if (info.isOpen && info.path) {
-                // Project is open
+                // Project is open - reset failed checks counter
+                failedChecksCount = 0;
                 lastProjectInfo = info;
 
                 if (info.path !== lastProjectPath) {
@@ -357,22 +355,45 @@ function checkProject() {
                 // Update display
                 updateDisplay(info);
 
-            } else {
-                // No project open - this should trigger when returning to project selection
-                log('No project detected. isOpen: ' + info.isOpen + ', path: ' + info.path, 'warn');
-                if (currentSession) {
-                    log('Ending session for: ' + currentSession.projectName);
-                    endSession();
+            } else if (info.isOpen === undefined || info.path === undefined) {
+                // ExtendScript returned invalid data - treat as temporary failure
+                log('Invalid project info (undefined values), treating as temp failure', 'warn');
+                if (checkProjectRetries < CHECK_PROJECT_MAX_RETRIES) {
+                    checkProjectRetries++;
+                    log('Retrying due to undefined values (' + checkProjectRetries + '/' + CHECK_PROJECT_MAX_RETRIES + ')...');
+                    setTimeout(checkProject, 1000);
+                    return;
                 }
-                lastProjectPath = '';
-                lastProjectInfo = null;
-                showNoProject();
+                checkProjectRetries = 0;
+                handleFailedCheck();
+            } else {
+                // Project explicitly closed (isOpen: false)
+                log('Project closed. isOpen: ' + info.isOpen);
+                handleFailedCheck();
             }
         } catch (e) {
             log('Error parsing project info: ' + e.message, 'error');
             log('Raw result: ' + result, 'error');
+            handleFailedCheck();
         }
     });
+}
+
+function handleFailedCheck() {
+    failedChecksCount++;
+    log('Failed check count: ' + failedChecksCount + '/' + FAILED_CHECKS_THRESHOLD);
+
+    if (failedChecksCount >= FAILED_CHECKS_THRESHOLD) {
+        // Only end session after multiple consecutive failures
+        if (currentSession) {
+            log('Ending session after ' + FAILED_CHECKS_THRESHOLD + ' failed checks');
+            endSession();
+        }
+        lastProjectPath = '';
+        lastProjectInfo = null;
+        showNoProject();
+        failedChecksCount = 0;
+    }
 }
 
 /**
