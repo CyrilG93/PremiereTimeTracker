@@ -352,13 +352,22 @@ function checkProject() {
 
             var info = JSON.parse(result);
 
-            // Log raw info periodically for debugging
+            // Normalize property names (support both old and new naming styles)
+            // Old style: projectName, projectPath, projectRoot
+            // New style: isOpen, path, fileName, folderName
+            var isOpen = info.isOpen !== undefined ? info.isOpen : (info.projectPath || info.projectName ? true : false);
+            var projectPath = info.path || info.projectPath || '';
+            var projectName = info.fileName || info.projectName || '';
+            var folderName = info.folderName || info.projectRoot || '';
+
+            // Log normalized info periodically for debugging
             if (failedChecksCount === 2) {
-                log('Raw ExtendScript response: ' + result.substring(0, 200), 'info');
+                log('Raw response: ' + result.substring(0, 150) + '...', 'info');
+                log('Normalized: isOpen=' + isOpen + ', path=' + (projectPath ? 'yes' : 'no') + ', name=' + (projectName ? 'yes' : 'no'), 'info');
             }
 
-            // Check if info has valid properties - accept path OR name (for NAS projects)
-            var hasValidProject = info.isOpen && (info.path || info.fileName || info.folderName);
+            // Check if info has valid properties
+            var hasValidProject = isOpen && (projectPath || projectName || folderName);
 
             if (hasValidProject) {
                 // Project is open - reset failed checks counter
@@ -366,32 +375,41 @@ function checkProject() {
                     log('Project recovered after ' + failedChecksCount + ' failed check(s)');
                 }
                 failedChecksCount = 0;
-                lastProjectInfo = info;
+
+                // Create normalized info object
+                var normalizedInfo = {
+                    isOpen: true,
+                    path: projectPath || projectName,
+                    fileName: projectName,
+                    folderName: folderName || projectName.replace('.prproj', ''),
+                    fullLocation: info.fullLocation || ''
+                };
+                lastProjectInfo = normalizedInfo;
 
                 // Use path or name for project identification
-                var projectId = info.path || info.fileName || info.folderName;
+                var projectId = projectPath || projectName;
 
                 if (projectId !== lastProjectPath) {
                     // New project or first detection
-                    log('Project detected: ' + (info.folderName || info.fileName || 'Unknown'));
+                    log('Project detected: ' + (folderName || projectName || 'Unknown'));
                     if (currentSession) {
                         // Close previous session
                         endSession();
                     }
                     // Start new session
-                    startSession(info);
+                    startSession(normalizedInfo);
                     lastProjectPath = projectId;
                 }
 
                 // Update display
-                updateDisplay(info);
+                updateDisplay(normalizedInfo);
 
-            } else if (info.isOpen === false) {
+            } else if (isOpen === false) {
                 // Project explicitly closed
                 handleFailedCheck('Project closed');
             } else {
                 // Missing required info but might have debug info
-                handleFailedCheck('Missing project info. Debug: ' + (info.debug || 'none').substring(0, 80));
+                handleFailedCheck('Missing project info. Debug: ' + (info.debug || JSON.stringify(info).substring(0, 60)));
             }
         } catch (e) {
             handleFailedCheck('Parse error: ' + e.message);
