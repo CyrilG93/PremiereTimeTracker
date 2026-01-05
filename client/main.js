@@ -506,11 +506,27 @@ function handleFailedCheck(reason) {
  */
 function startSession(info) {
     sessionStartTime = new Date();
+
+    // Extract project path - use fullLocation or extract from path
+    var projectPath = info.fullLocation || '';
+    if (!projectPath && info.path) {
+        // Extract path from full project path, skip Volumes and file name
+        var parts = info.path.split('/').filter(function (p) { return p && p !== 'Volumes'; });
+        // Remove the project file name and PROJET folder if present
+        if (parts.length > 0 && parts[parts.length - 1].indexOf('.prproj') !== -1) {
+            parts.pop();
+        }
+        if (parts.length > 0 && parts[parts.length - 1] === 'PROJET') {
+            parts.pop();
+        }
+        projectPath = parts.join('/');
+    }
+
     currentSession = {
         id: generateId(),
         projectFile: info.fileName,
         projectName: info.folderName,
-        projectPath: info.fullLocation,
+        projectPath: projectPath,
         openTime: sessionStartTime.toISOString(),
         closeTime: null,
         duration: 0
