@@ -631,17 +631,14 @@ function formatDuration(ms) {
 }
 
 /**
- * Format duration for export (Xh Ym)
+ * Format duration for export (H:MM)
  */
 function formatDurationExport(ms) {
     var totalMinutes = Math.floor(ms / 60000);
     var hours = Math.floor(totalMinutes / 60);
     var minutes = totalMinutes % 60;
 
-    if (hours > 0) {
-        return hours + 'h ' + minutes + 'm';
-    }
-    return minutes + 'm';
+    return hours + ':' + pad(minutes);
 }
 
 /**
