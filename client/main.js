@@ -805,14 +805,17 @@ function generateCSV(sessions) {
         var openDate = new Date(session.openTime);
         var closeDate = session.closeTime ? new Date(session.closeTime) : new Date();
 
+        // Detect platform
+        var platform = navigator.platform.indexOf('Mac') !== -1 ? 'MacOS' : 'Windows';
+
         var row = [
             '',                                          // A: Empty
             formatDateShort(openDate),                   // B: Month (1/6/2025)
             formatDateShort(openDate),                   // C: Day (1/6/2025)
             formatTime12h(openDate),                     // D: Open time (12:00 AM)
             formatTime12h(closeDate),                    // E: Close time (12:00 AM)
-            formatDurationExport(session.duration),      // F: Duration (Xh Ym)
-            '',                                          // G: Empty
+            formatDurationExport(session.duration),      // F: Duration (H:MM)
+            platform,                                    // G: Platform (MacOS/Windows)
             'Editing AV room',                           // H: Fixed text
             'Editing',                                   // I: Fixed text
             'Confirmed',                                 // J: Fixed text
