@@ -16,6 +16,7 @@ var STORAGE_KEY = 'timeTracker_data';
 var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
 var idleAlert, dismissIdleBtn, mainDisplay, autoPauseCheckbox;
+var logPanel, logContent, showLogsCheckbox, clearLogsBtn;
 
 // State
 var currentSession = null;
@@ -24,10 +25,12 @@ var settings = {
     mergeEntries: false,
     autoPause: true,
     idleTimeout: 30,
-    language: 'en'
+    language: 'en',
+    showLogs: false
 };
 var translations = {};
 var currentLang = 'en';
+var logEntries = [];
 
 // Timers
 var trackingInterval = null;
@@ -67,6 +70,10 @@ function init() {
     idleAlert = document.getElementById('idleAlert');
     dismissIdleBtn = document.getElementById('dismissIdleBtn');
     mainDisplay = document.getElementById('mainDisplay');
+    logPanel = document.getElementById('logPanel');
+    logContent = document.getElementById('logContent');
+    showLogsCheckbox = document.getElementById('showLogs');
+    clearLogsBtn = document.getElementById('clearLogsBtn');
 
     // Load saved data
     loadData();
@@ -92,6 +99,14 @@ function init() {
         clearAfterExportBtn.addEventListener('click', clearAllDataWithConfirmation);
     }
     dismissIdleBtn.addEventListener('click', dismissIdleAlert);
+
+    // Log panel event listeners
+    if (showLogsCheckbox) {
+        showLogsCheckbox.addEventListener('change', toggleLogPanel);
+    }
+    if (clearLogsBtn) {
+        clearLogsBtn.addEventListener('click', clearLogs);
+    }
 
     // Start polling for project changes
     startTracking();
@@ -246,8 +261,8 @@ function tryDetectProject(retriesLeft, delayMs) {
                 }, delayMs);
             } else {
                 // All retries exhausted - show debug info
-                console.log('No project detected after all retries');
-                console.log('Debug info:', info.debug || 'none');
+                log('No project detected after all retries', 'warn');
+                log('Debug info: ' + (info.debug || 'none'), 'warn');
                 var msg = (t('noProjectOpen') || 'No project open') + '\n\nDebug: ' + (info.debug || 'Unknown');
                 alert(msg);
             }
@@ -306,9 +321,9 @@ function checkProject() {
 
             } else {
                 // No project open - this should trigger when returning to project selection
-                console.log('No project detected. isOpen:', info.isOpen, 'path:', info.path);
+                log('No project detected. isOpen: ' + info.isOpen + ', path: ' + info.path, 'warn');
                 if (currentSession) {
-                    console.log('Ending session for:', currentSession.projectName);
+                    log('Ending session for: ' + currentSession.projectName);
                     endSession();
                 }
                 lastProjectPath = '';
@@ -889,6 +904,74 @@ function onPanelVisibilityChange(event) {
             endSession();
         }
     }
+}
+
+/**
+ * Logging system
+ */
+function log(message, level) {
+    level = level || 'info';
+    var timestamp = new Date().toLocaleTimeString();
+    var logEntry = {
+        time: timestamp,
+        message: message,
+        level: level
+    };
+    logEntries.push(logEntry);
+
+    // Keep only last 100 entries
+    if (logEntries.length > 100) {
+        logEntries.shift();
+    }
+
+    // Also log to console
+    if (level === 'error') {
+        console.error('[TT]', message);
+    } else if (level === 'warn') {
+        console.warn('[TT]', message);
+    } else {
+        console.log('[TT]', message);
+    }
+
+    // Update UI if visible
+    if (logContent && settings.showLogs) {
+        renderLogs();
+    }
+}
+
+function renderLogs() {
+    if (!logContent) return;
+
+    var html = logEntries.map(function (entry) {
+        return '<div class="log-entry ' + entry.level + '">' +
+            '<span class="log-time">' + entry.time + '</span>' +
+            entry.message +
+            '</div>';
+    }).join('');
+
+    logContent.innerHTML = html;
+    logContent.scrollTop = logContent.scrollHeight;
+}
+
+function toggleLogPanel() {
+    settings.showLogs = showLogsCheckbox.checked;
+    saveSettings();
+
+    if (settings.showLogs) {
+        logPanel.classList.add('show');
+        renderLogs();
+        log('Log panel enabled');
+    } else {
+        logPanel.classList.remove('show');
+    }
+}
+
+function clearLogs() {
+    logEntries = [];
+    if (logContent) {
+        logContent.innerHTML = '';
+    }
+    log('Logs cleared');
 }
 
 // Initialize when DOM is ready

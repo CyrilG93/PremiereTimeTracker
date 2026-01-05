@@ -74,9 +74,22 @@
                     </select>
                 </div>
                 <div class="setting-row">
+                    <label for="showLogs">Debug Logs</label>
+                    <input type="checkbox" id="showLogs">
+                </div>
+                <div class="setting-row">
                     <button id="clearDataBtn" class="danger-btn" data-i18n="settings.clearData">Clear Data</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Debug Log Panel -->
+        <div class="log-panel" id="logPanel">
+            <div class="log-header">
+                <span>📋 Debug Logs</span>
+                <button id="clearLogsBtn" class="icon-btn" title="Clear logs">🗑️</button>
+            </div>
+            <div class="log-content" id="logContent"></div>
         </div>
 
         <!-- Idle Alert -->
