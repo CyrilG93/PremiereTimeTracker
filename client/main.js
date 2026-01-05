@@ -274,7 +274,23 @@ function saveSettings() {
     }
     settings.idleTimeout = parseInt(idleTimeoutInput.value, 10) || 30;
     settings.language = languageSelect.value;
-    saveData();
+
+    // Save with current session included if tracking
+    if (currentSession && sessionStartTime) {
+        var now = new Date();
+        currentSession.duration = now.getTime() - sessionStartTime.getTime();
+        currentSession.closeTime = now.toISOString();
+
+        if (currentSession.duration >= 1000) {
+            var tempSessions = sessions.slice();
+            tempSessions.push(currentSession);
+            saveDataWithSessions(tempSessions);
+        } else {
+            saveData();
+        }
+    } else {
+        saveData();
+    }
 }
 
 /**
