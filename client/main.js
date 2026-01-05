@@ -296,9 +296,38 @@ function updateTimerDisplay() {
 /**
  * Check current project status
  */
+var checkProjectRetries = 0;
+var CHECK_PROJECT_MAX_RETRIES = 3;
+
 function checkProject() {
     csInterface.evalScript('getProjectInfo()', function (result) {
         try {
+            // Handle undefined or empty result
+            if (!result || result === 'undefined' || result === 'null') {
+                log('ExtendScript returned empty: ' + result, 'warn');
+
+                // Retry if we haven't exceeded max retries
+                if (checkProjectRetries < CHECK_PROJECT_MAX_RETRIES) {
+                    checkProjectRetries++;
+                    log('Retrying project check (' + checkProjectRetries + '/' + CHECK_PROJECT_MAX_RETRIES + ')...');
+                    setTimeout(checkProject, 1000);
+                    return;
+                }
+                // Max retries reached, show no project
+                log('Max retries reached, no project detected', 'warn');
+                checkProjectRetries = 0;
+                if (currentSession) {
+                    endSession();
+                }
+                lastProjectPath = '';
+                lastProjectInfo = null;
+                showNoProject();
+                return;
+            }
+
+            // Reset retry counter on successful result
+            checkProjectRetries = 0;
+
             var info = JSON.parse(result);
 
             if (info.isOpen && info.path) {
@@ -307,6 +336,7 @@ function checkProject() {
 
                 if (info.path !== lastProjectPath) {
                     // New project or first detection
+                    log('Project detected: ' + info.folderName);
                     if (currentSession) {
                         // Close previous session
                         endSession();
@@ -331,7 +361,8 @@ function checkProject() {
                 showNoProject();
             }
         } catch (e) {
-            console.error('Error parsing project info:', e);
+            log('Error parsing project info: ' + e.message, 'error');
+            log('Raw result: ' + result, 'error');
         }
     });
 }
