@@ -45,6 +45,10 @@ var POLL_INTERVAL_MS = 2000;      // Project status check
 var DISPLAY_INTERVAL_MS = 1000;   // Timer display update
 var IDLE_CHECK_INTERVAL_MS = 30000; // Check for idle state every 30 seconds
 var ACTIVITY_CHECK_INTERVAL_MS = 10000; // Check activity every 10 seconds
+var AUTO_SAVE_INTERVAL_MS = 30000; // Auto-save every 30 seconds
+
+// Auto-save interval
+var autoSaveInterval = null;
 
 // Activity detection
 var lastProjectState = '';
@@ -231,6 +235,32 @@ function saveData() {
     } catch (e) {
         console.error('Error saving data:', e);
         log('ERROR saving data: ' + e.message + ' - Path: ' + dataFilePath, 'error');
+    }
+}
+
+/**
+ * Save data with provided sessions array (for auto-save with current session)
+ */
+function saveDataWithSessions(sessionsToSave) {
+    var fs = require('fs');
+    var dataFilePath = getDataFilePath();
+
+    try {
+        // Filter valid sessions
+        var validSessions = sessionsToSave.filter(function (s) {
+            return s && s.id && s.openTime && s.duration > 0;
+        });
+
+        var data = {
+            sessions: validSessions,
+            settings: settings,
+            lastSaved: new Date().toISOString()
+        };
+
+        fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+        log('Auto-saved: ' + validSessions.length + ' session(s)');
+    } catch (e) {
+        log('ERROR auto-saving: ' + e.message, 'error');
     }
 }
 
@@ -470,13 +500,57 @@ function startSession(info) {
         duration: 0
     };
 
-    console.log('Session started:', currentSession.projectName);
+    log('Session started: ' + currentSession.projectName);
+
+    // Start auto-save interval
+    startAutoSave();
+}
+
+/**
+ * Start auto-save interval
+ */
+function startAutoSave() {
+    if (autoSaveInterval) {
+        clearInterval(autoSaveInterval);
+    }
+    autoSaveInterval = setInterval(function () {
+        if (currentSession && sessionStartTime) {
+            // Update current session duration
+            var now = new Date();
+            currentSession.duration = now.getTime() - sessionStartTime.getTime();
+            currentSession.closeTime = now.toISOString();
+
+            // Save to file (will filter short sessions)
+            if (currentSession.duration >= 1000) {
+                // Temporarily add current session to array for save
+                var tempSessions = sessions.slice();
+                tempSessions.push(currentSession);
+
+                // Save with current session included
+                saveDataWithSessions(tempSessions);
+            }
+        }
+    }, AUTO_SAVE_INTERVAL_MS);
+    log('Auto-save started (every ' + (AUTO_SAVE_INTERVAL_MS / 1000) + 's)');
+}
+
+/**
+ * Stop auto-save interval
+ */
+function stopAutoSave() {
+    if (autoSaveInterval) {
+        clearInterval(autoSaveInterval);
+        autoSaveInterval = null;
+    }
 }
 
 /**
  * End the current session
  */
 function endSession() {
+    // Stop auto-save first
+    stopAutoSave();
+
     if (!currentSession) {
         log('endSession called but no current session', 'warn');
         return;
