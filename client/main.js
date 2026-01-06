@@ -1041,6 +1041,7 @@ function clearAllDataWithConfirmation() {
  * Idle detection - shows alert when project is open but not being tracked
  */
 var idleStartTime = null;
+var idleAlertShown = false; // Flag to prevent repeated alerts
 
 function startIdleDetection() {
     // Check every 30 seconds
@@ -1048,15 +1049,14 @@ function startIdleDetection() {
 }
 
 function checkIdleState() {
-    // Check if project is open but no active session
     csInterface.evalScript('isProjectOpen()', function (result) {
-        console.log('Idle check - project open:', result, 'session active:', !!currentSession);
+        var projectOpen = result === 'true';
 
-        if (result === 'true' && !currentSession) {
-            // Project open but not tracked
+        if (projectOpen && !currentSession) {
+            // Project is open but not being tracked - start idle timer
             if (!idleStartTime) {
                 idleStartTime = new Date();
-                console.log('Idle timer started');
+                idleAlertShown = false; // Reset flag when idle timer starts
             }
 
             // Check if idle timeout exceeded
@@ -1065,12 +1065,14 @@ function checkIdleState() {
 
             console.log('Idle time:', Math.floor(idleMs / 1000), 's, timeout:', settings.idleTimeout, 'min');
 
-            if (idleMs >= timeoutMs) {
+            if (idleMs >= timeoutMs && !idleAlertShown) {
                 showIdleAlert();
+                idleAlertShown = true; // Only show once
             }
         } else {
             // Reset idle timer when tracking or no project
             idleStartTime = null;
+            idleAlertShown = false;
             idleAlert.classList.remove('show');
         }
     });
@@ -1082,6 +1084,7 @@ function showIdleAlert() {
 
 function dismissIdleAlert() {
     idleAlert.classList.remove('show');
+    idleAlertShown = false;
     // Try to detect project again
     checkProject();
 }
