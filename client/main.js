@@ -29,19 +29,19 @@ var settings = {
     showLogs: false,
     csvColumns: [
         { type: 'empty', value: '' },
-        { type: 'dateShort', value: '' },
-        { type: 'dateShort', value: '' },
-        { type: 'timeOpen', value: '' },
-        { type: 'timeClose', value: '' },
-        { type: 'duration', value: '' },
-        { type: 'platform', value: '' },
-        { type: 'fixedText', value: 'Editing AV room' },
-        { type: 'fixedText', value: 'Editing' },
-        { type: 'fixedText', value: 'Confirmed' },
         { type: 'empty', value: '' },
         { type: 'empty', value: '' },
-        { type: 'projectName', value: '' },
-        { type: 'projectPath', value: '' }
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' }
     ]
 };
 var translations = {};
