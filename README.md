@@ -1,5 +1,119 @@
 # Premiere Time Tracker
 
+CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each project.
+
+## ✨ Features
+
+- ⏱️ **Automatic tracking** - Detects project open/close
+- 📊 **CSV export** - Exports data with 14 formatted columns
+- 🔄 **Multi-sessions** - Each opening creates a new entry
+- 📁 **Project name** - Automatically extracts the project folder name
+- 🔀 **Optional merge** - Merges sessions from the same day
+- ⏸️ **Auto-pause** - Automatic pause after X minutes of inactivity
+- 🌐 **Bilingual** - Interface in French and English
+- 💾 **Persistent storage** - Data saved in `~/Documents/TimeTracker_data.json`
+- 🔄 **Auto-save** - Saves every 30 seconds during tracking
+- 🐛 **Debug logs** - Built-in log panel to diagnose issues
+
+## 📦 Installation
+
+### macOS
+
+1. Double-click on `install_mac.sh` or run in Terminal:
+   ```bash
+   chmod +x install_mac.sh && ./install_mac.sh
+   ```
+
+2. Restart Adobe Premiere Pro
+
+3. Open: **Window > Extensions > Time Tracker**
+
+### Windows
+
+1. Double-click on `install_windows.bat`
+
+2. Restart Adobe Premiere Pro
+
+3. Open: **Window > Extensions > Time Tracker**
+
+## 🚀 Usage
+
+### Tracking
+1. Open the extension in Premiere Pro
+2. Tracking starts automatically when a project is open
+3. Time is displayed in green when tracking is active
+4. Data is automatically saved every 30 seconds
+
+### CSV Export
+1. Click the **Export** button
+2. A CSV file is saved to the Desktop
+
+### Export format
+| Column | Content |
+|--------|---------|
+| A | Empty |
+| B | Date (M/D/YYYY) |
+| C | Date (M/D/YYYY) |
+| D | Open time (HH:MM AM/PM) |
+| E | Close time (HH:MM AM/PM) |
+| F | Duration (H:MM) |
+| G | Platform (MacOS/Windows) |
+| H | "Editing AV room" |
+| I | "Editing" |
+| J | "Confirmed" |
+| K-L | Empty |
+| M | Project name |
+| N | Location |
+
+### Settings
+- **Merge same day**: Groups sessions of the same project on the same day
+- **Auto-pause**: Pauses tracking after X minutes of inactivity
+- **Timeout**: Delay before auto-pause (default: 30 min)
+- **Language**: English or French
+- **Debug Logs**: Displays the log panel to diagnose issues
+
+## 📁 Data storage
+
+Data is stored in a persistent JSON file:
+```
+~/Documents/TimeTracker_data.json
+```
+
+This file contains all sessions and settings, and is not deleted during Premiere Pro updates.
+
+## 🔧 Uninstallation
+
+### macOS
+```bash
+rm -rf "$HOME/Library/Application Support/Adobe/CEP/extensions/PremiereTimeTracker"
+```
+
+### Windows
+```cmd
+rmdir /s /q "%APPDATA%\Adobe\CEP\extensions\PremiereTimeTracker"
+```
+
+## 📝 Compatibility
+
+- Adobe Premiere Pro 2025 (25.5+)
+- macOS & Windows
+
+## 👤 Author
+
+CyrilG93
+
+## 📄 License
+
+MIT License
+
+---
+
+# 🇫🇷 Version Française
+
+---
+
+# Premiere Time Tracker
+
 Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temps passé sur chaque projet.
 
 ## ✨ Fonctionnalités
