@@ -26,7 +26,23 @@ var settings = {
     autoPause: true,
     idleTimeout: 30,
     language: 'en',
-    showLogs: false
+    showLogs: false,
+    csvColumns: [
+        { type: 'empty', value: '' },
+        { type: 'dateShort', value: '' },
+        { type: 'dateShort', value: '' },
+        { type: 'timeOpen', value: '' },
+        { type: 'timeClose', value: '' },
+        { type: 'duration', value: '' },
+        { type: 'platform', value: '' },
+        { type: 'fixedText', value: 'Editing AV room' },
+        { type: 'fixedText', value: 'Editing' },
+        { type: 'fixedText', value: 'Confirmed' },
+        { type: 'empty', value: '' },
+        { type: 'empty', value: '' },
+        { type: 'projectName', value: '' },
+        { type: 'projectPath', value: '' }
+    ]
 };
 var translations = {};
 var currentLang = 'en';
@@ -115,6 +131,13 @@ function init() {
     if (clearLogsBtn) {
         clearLogsBtn.addEventListener('click', clearLogs);
     }
+
+    // CSV Columns configuration
+    var csvConfigToggle = document.getElementById('csvConfigToggle');
+    if (csvConfigToggle) {
+        csvConfigToggle.addEventListener('click', toggleCsvConfig);
+    }
+    renderCsvColumnsUI();
 
     // Start polling for project changes
     startTracking();
@@ -817,7 +840,7 @@ function mergeSessionsByDay(sessions) {
 }
 
 /**
- * Generate CSV content with specified format
+ * Generate CSV content with customizable columns
  */
 function generateCSV(sessions) {
     var lines = [];
@@ -829,25 +852,12 @@ function generateCSV(sessions) {
         var openDate = new Date(session.openTime);
         var closeDate = session.closeTime ? new Date(session.closeTime) : new Date();
 
-        // Detect platform
-        var platform = navigator.platform.indexOf('Mac') !== -1 ? 'MacOS' : 'Windows';
-
-        var row = [
-            '',                                          // A: Empty
-            formatDateShort(openDate),                   // B: Month (1/6/2025)
-            formatDateShort(openDate),                   // C: Day (1/6/2025)
-            formatTime12h(openDate),                     // D: Open time (12:00 AM)
-            formatTime12h(closeDate),                    // E: Close time (12:00 AM)
-            formatDurationExport(session.duration),      // F: Duration (H:MM)
-            platform,                                    // G: Platform (MacOS/Windows)
-            'Editing AV room',                           // H: Fixed text
-            'Editing',                                   // I: Fixed text
-            'Confirmed',                                 // J: Fixed text
-            '',                                          // K: Empty
-            '',                                          // L: Empty
-            session.projectName || session.projectFile,  // M: Project name
-            session.projectPath                          // N: Location
-        ];
+        // Build row based on custom column configuration
+        var row = [];
+        for (var i = 0; i < 14; i++) {
+            var colConfig = settings.csvColumns[i] || { type: 'empty', value: '' };
+            row.push(getColumnValue(session, colConfig, openDate, closeDate));
+        }
 
         lines.push(row.map(escapeCSV).join(','));
     });
@@ -1229,6 +1239,123 @@ function clearLogs() {
         logContent.innerHTML = '';
     }
     log('Logs cleared');
+}
+
+/**
+ * CSV Column Configuration
+ */
+var CSV_COLUMN_TYPES = [
+    { value: 'empty', label: 'Empty' },
+    { value: 'dateShort', label: 'Date (M/D/YYYY)' },
+    { value: 'timeOpen', label: 'Time Open' },
+    { value: 'timeClose', label: 'Time Close' },
+    { value: 'duration', label: 'Duration (H:MM)' },
+    { value: 'platform', label: 'Platform' },
+    { value: 'projectName', label: 'Project Name' },
+    { value: 'projectFile', label: 'Project File' },
+    { value: 'projectPath', label: 'Project Path' },
+    { value: 'fixedText', label: 'Fixed Text' }
+];
+
+function toggleCsvConfig() {
+    var content = document.getElementById('csvConfigContent');
+    if (content) {
+        content.classList.toggle('show');
+    }
+}
+
+function renderCsvColumnsUI() {
+    var container = document.getElementById('csvColumnsContainer');
+    if (!container) return;
+
+    var letters = 'ABCDEFGHIJKLMN'.split('');
+    var html = '';
+
+    for (var i = 0; i < 14; i++) {
+        var col = settings.csvColumns[i] || { type: 'empty', value: '' };
+
+        html += '<div class="csv-column-row">';
+        html += '<span class="csv-column-letter">' + letters[i] + '</span>';
+        html += '<select class="csv-column-select" data-col="' + i + '">';
+
+        for (var j = 0; j < CSV_COLUMN_TYPES.length; j++) {
+            var opt = CSV_COLUMN_TYPES[j];
+            var selected = col.type === opt.value ? ' selected' : '';
+            html += '<option value="' + opt.value + '"' + selected + '>' + opt.label + '</option>';
+        }
+
+        html += '</select>';
+        html += '<input type="text" class="csv-column-value' + (col.type === 'fixedText' ? ' show' : '') + '" ';
+        html += 'data-col="' + i + '" value="' + (col.value || '') + '" placeholder="Text...">';
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+
+    // Add event listeners
+    var selects = container.querySelectorAll('.csv-column-select');
+    var inputs = container.querySelectorAll('.csv-column-value');
+
+    selects.forEach(function (select) {
+        select.addEventListener('change', onCsvColumnTypeChange);
+    });
+
+    inputs.forEach(function (input) {
+        input.addEventListener('change', onCsvColumnValueChange);
+    });
+}
+
+function onCsvColumnTypeChange(e) {
+    var colIndex = parseInt(e.target.getAttribute('data-col'));
+    var newType = e.target.value;
+
+    settings.csvColumns[colIndex].type = newType;
+
+    // Show/hide text input
+    var input = e.target.parentElement.querySelector('.csv-column-value');
+    if (input) {
+        if (newType === 'fixedText') {
+            input.classList.add('show');
+        } else {
+            input.classList.remove('show');
+            settings.csvColumns[colIndex].value = '';
+        }
+    }
+
+    saveSettings();
+}
+
+function onCsvColumnValueChange(e) {
+    var colIndex = parseInt(e.target.getAttribute('data-col'));
+    settings.csvColumns[colIndex].value = e.target.value;
+    saveSettings();
+}
+
+function getColumnValue(session, colConfig, openDate, closeDate) {
+    switch (colConfig.type) {
+        case 'empty':
+            return '';
+        case 'dateShort':
+            return formatDateShort(openDate);
+        case 'timeOpen':
+            return formatTime12h(openDate);
+        case 'timeClose':
+            return formatTime12h(closeDate);
+        case 'duration':
+            return formatDurationExport(session.duration);
+        case 'platform':
+            return navigator.platform.indexOf('Mac') !== -1 ? 'MacOS' : 'Windows';
+        case 'projectName':
+            return session.projectName || session.projectFile || '';
+        case 'projectFile':
+            return session.projectFile || '';
+        case 'projectPath':
+            return session.projectPath || '';
+        case 'fixedText':
+            return colConfig.value || '';
+        default:
+            return '';
+    }
 }
 
 // Initialize when DOM is ready
