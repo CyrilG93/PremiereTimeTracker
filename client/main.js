@@ -3,7 +3,7 @@
  * Tracks time spent on projects and exports to CSV
  * 
  * @author CyrilG93
- * @version 1.0.0
+ * @version 1.1.1
  */
 
 // CSInterface wrapper for communication with Premiere Pro
