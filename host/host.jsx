@@ -10,7 +10,11 @@
  * Get current project information
  * @returns {string} JSON string with project info
  */
-function getProjectInfo() {
+/**
+ * Get current project information
+ * @returns {string} JSON string with project info
+ */
+function TimeTracker_getProjectInfo() {
     try {
         // Collect debug info
         var debugInfo = [];
@@ -145,7 +149,7 @@ function getProjectInfo() {
  * Check if a project is currently open
  * @returns {string} "true" or "false"
  */
-function isProjectOpen() {
+function TimeTracker_isProjectOpen() {
     try {
         // Check both path and name for NAS compatibility
         if (app.project && app.project.path && app.project.path.length > 0) {
@@ -164,7 +168,7 @@ function isProjectOpen() {
  * Get the project file path only
  * @returns {string} Project path or empty string
  */
-function getProjectPath() {
+function TimeTracker_getProjectPath() {
     try {
         if (app.project && app.project.path) {
             return app.project.path;
@@ -180,7 +184,7 @@ function getProjectPath() {
  * Returns a hash of project state to detect changes
  * @returns {string} State hash or empty string
  */
-function getProjectState() {
+function TimeTracker_getProjectState() {
     try {
         var state = [];
 

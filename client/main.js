@@ -353,7 +353,7 @@ function toggleTracking() {
  * Try to detect project with retries
  */
 function tryDetectProject(retriesLeft, delayMs) {
-    csInterface.evalScript('getProjectInfo()', function (result) {
+    csInterface.evalScript('TimeTracker_getProjectInfo()', function (result) {
         try {
             console.log('Detection attempt, retries left:', retriesLeft, 'result:', result);
             var info = JSON.parse(result);
@@ -412,7 +412,7 @@ var failedChecksCount = 0;
 var FAILED_CHECKS_THRESHOLD = 5; // Require 5 consecutive failures before closing
 
 function checkProject() {
-    csInterface.evalScript('getProjectInfo()', function (result) {
+    csInterface.evalScript('TimeTracker_getProjectInfo()', function (result) {
         try {
             // Handle undefined or empty result
             if (!result || result === 'undefined' || result === 'null') {
@@ -1059,7 +1059,7 @@ function startIdleDetection() {
 }
 
 function checkIdleState() {
-    csInterface.evalScript('isProjectOpen()', function (result) {
+    csInterface.evalScript('TimeTracker_isProjectOpen()', function (result) {
         var projectOpen = result === 'true';
 
         if (projectOpen && !currentSession) {
@@ -1117,7 +1117,7 @@ function checkActivity() {
         return;
     }
 
-    csInterface.evalScript('getProjectState()', function (result) {
+    csInterface.evalScript('TimeTracker_getProjectState()', function (result) {
         console.log('Activity check - state:', result);
 
         if (result && result !== lastProjectState) {
