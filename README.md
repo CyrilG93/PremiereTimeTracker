@@ -11,7 +11,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - 🔀 **Optional merge** - Merges sessions from the same day
 - ⏸️ **Auto-pause** - Automatic pause after X minutes of inactivity
 - 🌐 **Bilingual** - Interface in French and English
-- 💾 **Persistent storage** - Data saved in `~/Documents/TimeTracker_data.json`
+- 💾 **Persistent storage** - Data saved in `Application Support` (Mac) or `AppData` (Win)
 - 🔄 **Auto-save** - Saves every 30 seconds during tracking
 - 🐛 **Debug logs** - Built-in log panel to diagnose issues
 
@@ -51,33 +51,32 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 ### Export format
 | Column | Content |
 |--------|---------|
-| A | Empty |
-| B | Date (M/D/YYYY) |
-| C | Date (M/D/YYYY) |
-| D | Open time (HH:MM AM/PM) |
-| E | Close time (HH:MM AM/PM) |
-| F | Duration (H:MM) |
-| G | Platform (MacOS/Windows) |
-| H | "Editing AV room" |
-| I | "Editing" |
-| J | "Confirmed" |
-| K-L | Empty |
-| M | Project name |
-| N | Location |
+| A-N | **Customizable** - Configure each of the 14 columns in Settings |
+
+### Column Options
+- Empty
+- Date (M/D/YYYY)
+- Open Time
+- Close Time
+- Duration
+- Platform
+- Project Name
+- Project Path
+- Fixed Text (Custom value)
 
 ### Settings
 - **Merge same day**: Groups sessions of the same project on the same day
 - **Auto-pause**: Pauses tracking after X minutes of inactivity
 - **Timeout**: Delay before auto-pause (default: 30 min)
 - **Language**: English or French
+- **CSV Columns**: Customize the content of the 14 export columns
 - **Debug Logs**: Displays the log panel to diagnose issues
 
 ## 📁 Data storage
 
 Data is stored in a persistent JSON file:
-```
-~/Documents/TimeTracker_data.json
-```
+**macOS:** `~/Library/Application Support/PremiereTimeTracker/timeTracker_data.json`
+**Windows:** `%APPDATA%\PremiereTimeTracker\timeTracker_data.json`
 
 This file contains all sessions and settings, and is not deleted during Premiere Pro updates.
 
@@ -125,7 +124,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - 🔀 **Fusion optionnelle** - Fusionne les sessions du même jour
 - ⏸️ **Auto-pause** - Pause automatique après X minutes d'inactivité
 - 🌐 **Bilingue** - Interface en français et anglais
-- 💾 **Stockage persistant** - Données sauvegardées dans `~/Documents/TimeTracker_data.json`
+- 💾 **Stockage persistant** - Données sauvegardées dans `Application Support` (Mac) ou `AppData` (Win)
 - 🔄 **Auto-sauvegarde** - Sauvegarde toutes les 30 secondes pendant le tracking
 - 🐛 **Debug logs** - Panneau de logs intégré pour diagnostiquer les problèmes
 
@@ -165,33 +164,32 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 ### Format d'export
 | Colonne | Contenu |
 |---------|---------|
-| A | Vide |
-| B | Date (M/D/YYYY) |
-| C | Date (M/D/YYYY) |
-| D | Heure ouverture (HH:MM AM/PM) |
-| E | Heure fermeture (HH:MM AM/PM) |
-| F | Durée (H:MM) |
-| G | Plateforme (MacOS/Windows) |
-| H | "Editing AV room" |
-| I | "Editing" |
-| J | "Confirmed" |
-| K-L | Vide |
-| M | Nom du projet |
-| N | Emplacement |
+| A-N | **Personnalisable** - Configurez chacune des 14 colonnes dans les Paramètres |
+
+### Options de colonnes
+- Vide
+- Date (M/D/YYYY)
+- Heure ouverture
+- Heure fermeture
+- Durée
+- Plateforme
+- Nom du projet
+- Chemin du projet
+- Texte fixe (Valeur personnalisée)
 
 ### Paramètres
 - **Fusionner même jour** : Regroupe les sessions d'un même projet le même jour
 - **Auto-pause** : Pause le tracking après X minutes d'inactivité
 - **Timeout** : Délai avant auto-pause (défaut: 30 min)
 - **Langue** : Anglais ou Français
+- **Colonnes CSV** : Personnalisez le contenu des 14 colonnes d'export
 - **Debug Logs** : Affiche le panneau de logs pour diagnostiquer les problèmes
 
 ## 📁 Stockage des données
 
 Les données sont stockées dans un fichier JSON persistant :
-```
-~/Documents/TimeTracker_data.json
-```
+**macOS :** `~/Library/Application Support/PremiereTimeTracker/timeTracker_data.json`
+**Windows :** `%APPDATA%\PremiereTimeTracker\timeTracker_data.json`
 
 Ce fichier contient toutes les sessions et paramètres, et n'est pas effacé lors des mises à jour de Premiere Pro.
 
