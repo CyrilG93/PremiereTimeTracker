@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.cyrilg93.timetracker" ExtensionBundleVersion="1.1.2"
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.timetracker.premiere" ExtensionBundleVersion="1.1.3"
                    ExtensionBundleName="Time Tracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Author>CyrilG93</Author>
-  <Contact>cyril.vellas@bluewin.ch</Contact>
-  <Legal>All rights reserved.</Legal>
-  <Abstract>Track time spent on Premiere Pro projects</Abstract>
+  <Author>
+    <![CDATA[Time Tracker Extension]]>
+  </Author>
+  <Contact mailto="support@example.com"/>
+  <Legal>
+    <![CDATA[Track time spent on Premiere Pro projects.]]>
+  </Legal>
+  <Abstract href="https://example.com">
+    <![CDATA[Automatically track and export time spent on projects.]]>
+  </Abstract>
   <ExtensionList>
-    <Extension Id="com.cyrilg93.timetracker.panel" Version="1.1.2"/>
+    <Extension Id="com.timetracker.premiere.panel" Version="1.1.3"/>
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>

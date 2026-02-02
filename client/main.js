@@ -1173,11 +1173,11 @@ function checkActivity() {
             if (inactiveMs >= timeoutMs) {
                 // Auto-pause: end the session
                 console.log('Auto-pause: no activity for', settings.idleTimeout, 'minutes');
-                alert('⏸️ Auto-pause: Aucune activité depuis ' + settings.idleTimeout + ' minutes.\nLe chrono a été arrêté.');
                 endSession();
                 lastProjectPath = '';
                 lastProjectInfo = null;
                 showNoProject();
+                alert('⏸️ Auto-pause: Aucune activité depuis ' + settings.idleTimeout + ' minutes.\nLe chrono a été arrêté.');
             }
         }
     });
