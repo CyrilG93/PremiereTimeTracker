@@ -157,18 +157,56 @@ function init() {
 /**
  * Get the data file path
  */
+/**
+ * Get the data file path
+ * Uses Application Support/AppData for persistence
+ */
 function getDataFilePath() {
     var os = require('os');
     var path = require('path');
-    return path.join(os.homedir(), 'Documents', 'TimeTracker_data.json');
+    var platform = os.platform();
+    var dataDir;
+
+    // Determine proper data directory based on OS
+    if (platform === 'darwin') {
+        dataDir = path.join(os.homedir(), 'Library', 'Application Support', 'PremiereTimeTracker');
+    } else {
+        dataDir = path.join(process.env.APPDATA || os.homedir(), 'PremiereTimeTracker');
+    }
+
+    var fs = require('fs');
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    return path.join(dataDir, 'timeTracker_data.json');
 }
 
 /**
- * Load saved data from file (with localStorage migration)
+ * Load saved data from file (with migration support)
  */
 function loadData() {
     var fs = require('fs');
+    var path = require('path');
+    var os = require('os');
+
     var dataFilePath = getDataFilePath();
+
+    // Check for legacy file in Documents and migrate if needed
+    var legacyPath = path.join(os.homedir(), 'Documents', 'TimeTracker_data.json');
+    if (fs.existsSync(legacyPath) && !fs.existsSync(dataFilePath)) {
+        try {
+            log('Migrating data from Documents to new storage location...');
+            var legacyData = fs.readFileSync(legacyPath, 'utf8');
+            fs.writeFileSync(dataFilePath, legacyData, 'utf8');
+            // Rename legacy file to avoid confusion (or delete it)
+            fs.renameSync(legacyPath, legacyPath + '.bak');
+            log('Migration successful.');
+        } catch (e) {
+            console.error('Error migrating legacy data:', e);
+            log('Error migrating data: ' + e.message, 'error');
+        }
+    }
 
     try {
         // Try to load from file first
