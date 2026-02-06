@@ -74,6 +74,52 @@ var activityCheckInterval = null;
 /**
  * Initialize the extension
  */
+// ============================================================================
+// UPDATE SYSTEM CONSTANTS & TRANSLATIONS
+// ============================================================================
+const GITHUB_REPO = 'CyrilG93/PremiereTimeTracker';
+let CURRENT_VERSION = '1.2.0';
+
+// Update translations with update message
+function loadTranslations(lang, callback) {
+    var fs = require('fs');
+    var path = require('path');
+    var langPath = path.join(csInterface.getSystemPath(SystemPath.EXTENSION), 'client', 'lang', lang + '.json');
+
+    // Default messages for update
+    const updateMessages = {
+        en: {
+            updateAvailable: "🚀 New version available! Click to update.",
+        },
+        fr: {
+            updateAvailable: "🚀 Nouvelle version disponible ! Cliquez pour mettre à jour.",
+        }
+    };
+
+    if (fs.existsSync(langPath)) {
+        try {
+            var content = fs.readFileSync(langPath, 'utf8');
+            translations = JSON.parse(content);
+            // Merge update message
+            translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
+            if (callback) callback();
+        } catch (e) {
+            console.error('Error loading translations:', e);
+            translations = {};
+            translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
+            if (callback) callback();
+        }
+    } else {
+        console.warn('Translation file not found:', langPath);
+        translations = {};
+        translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
+        if (callback) callback();
+    }
+}
+
+/**
+ * Initialize the extension
+ */
 function init() {
     timeDisplay = document.getElementById('timeDisplay');
     projectName = document.getElementById('projectName');
@@ -102,6 +148,9 @@ function init() {
     loadTranslations(settings.language, function () {
         applyTranslations();
     });
+
+    // Check for updates
+    checkForUpdates();
 
     // Event listeners
     exportBtn.addEventListener('click', exportToCSV);
@@ -152,6 +201,131 @@ function init() {
     csInterface.addEventListener('com.adobe.csxs.events.WindowVisibilityChanged', onPanelVisibilityChange);
 
     console.log('Time Tracker initialized');
+}
+
+// ============================================================================
+// UPDATE LOGIC
+// ============================================================================
+
+function compareVersions(v1, v2) {
+    const p1 = v1.replace(/^v/, '').split('.').map(Number);
+    const p2 = v2.replace(/^v/, '').split('.').map(Number);
+    const len = Math.max(p1.length, p2.length);
+
+    for (let i = 0; i < len; i++) {
+        const num1 = p1[i] || 0;
+        const num2 = p2[i] || 0;
+        if (num1 > num2) return 1;
+        if (num1 < num2) return -1;
+    }
+    return 0;
+}
+
+function getAppVersion() {
+    try {
+        if (window.cep && window.cep.fs) {
+            const path = window.cep.fs.readFile(csInterface.getSystemPath(SystemPath.EXTENSION) + "/CSXS/manifest.xml");
+            if (path.data) {
+                const match = path.data.match(/ExtensionBundleVersion="([^"]+)"/);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+        }
+    } catch (e) {
+        console.error('[Update] Error reading manifest:', e);
+    }
+    return CURRENT_VERSION;
+}
+
+async function checkForUpdates() {
+    console.log('[Update] Checking for updates...');
+    const localVersion = getAppVersion();
+    console.log('[Update] Local version:', localVersion);
+
+    // Update settings badge
+    const versionBadge = document.getElementById('versionInfo');
+    if (versionBadge) {
+        versionBadge.textContent = 'v' + localVersion;
+    }
+
+    try {
+        if (window.require) {
+            const https = require('https');
+            const options = {
+                hostname: 'api.github.com',
+                path: `/repos/${GITHUB_REPO}/releases/latest`,
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'PremiereTimeTracker-UpdateCheck'
+                }
+            };
+
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => data += chunk);
+                res.on('end', () => {
+                    handleUpdateResponse(data, localVersion);
+                });
+            });
+
+            req.on('error', (e) => {
+                console.error('[Update] Network error:', e);
+            });
+
+            req.end();
+        }
+    } catch (e) {
+        console.error('[Update] Unexpected error:', e);
+    }
+}
+
+function handleUpdateResponse(data, localVersion) {
+    try {
+        const release = JSON.parse(data);
+        const latestVersion = release.tag_name.replace(/^v/, '');
+
+        console.log('[Update] Latest version:', latestVersion);
+
+        if (compareVersions(latestVersion, localVersion) > 0) {
+            console.log('[Update] New version available!');
+
+            // Find zip asset
+            const zipAsset = release.assets.find(asset => asset.name.endsWith('.zip'));
+            const downloadUrl = zipAsset ? zipAsset.browser_download_url : release.html_url;
+
+            showUpdateBanner(downloadUrl);
+        } else {
+            console.log('[Update] App is up to date.');
+        }
+    } catch (e) {
+        console.error('[Update] Error parsing response:', e);
+    }
+}
+
+function showUpdateBanner(downloadUrl) {
+    const banner = document.getElementById('updateBanner');
+    if (banner) {
+        banner.style.display = 'block';
+
+        // Use translation function
+        banner.textContent = t('updateAvailable');
+
+        banner.onclick = function () {
+            if (downloadUrl) {
+                try {
+                    csInterface.openURLInDefaultBrowser(downloadUrl);
+                } catch (e) {
+                    console.error('[Update] Error opening URL:', e);
+                    try {
+                        window.location.href = downloadUrl;
+                    } catch (e2) {
+                        console.error('[Update] Fallback failed:', e2);
+                    }
+                }
+            }
+        };
+    }
 }
 
 /**
@@ -1009,27 +1183,7 @@ function onLanguageChange() {
     });
 }
 
-/**
- * Load translations from JSON file
- */
-function loadTranslations(lang, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'lang/' + lang + '.json', true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                try {
-                    translations = JSON.parse(xhr.responseText);
-                    currentLang = lang;
-                } catch (e) {
-                    console.error('Error parsing translations:', e);
-                }
-            }
-            if (callback) callback();
-        }
-    };
-    xhr.send();
-}
+
 
 /**
  * Get translation by key
