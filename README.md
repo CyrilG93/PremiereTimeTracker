@@ -19,14 +19,18 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 
 ### macOS
 
-1. Double-click on `install_mac.sh` or run in Terminal:
+1. Open Terminal.
+2. **Easiest method (recommended):** drag and drop `install_mac.sh` into the Terminal window, then press Enter.
+3. **Manual method (command line):** run:
    ```bash
-   chmod +x install_mac.sh && ./install_mac.sh
+   cd /path/to/PremiereTimeTracker
+   chmod +x install_mac.sh
+   ./install_mac.sh
    ```
 
-2. Restart Adobe Premiere Pro
+4. Restart Adobe Premiere Pro
 
-3. Open: **Window > Extensions > Time Tracker**
+5. Open: **Window > Extensions > Time Tracker**
 
 ### Windows
 
@@ -132,14 +136,18 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 
 ### macOS
 
-1. Double-cliquez sur `install_mac.sh` ou exécutez dans le Terminal :
+1. Ouvrez le Terminal.
+2. **Méthode la plus simple (recommandée)** : glissez-déposez `install_mac.sh` dans la fenêtre du Terminal, puis appuyez sur Entrée.
+3. **Méthode manuelle (ligne de commande)** : lancez :
    ```bash
-   chmod +x install_mac.sh && ./install_mac.sh
+   cd /chemin/vers/PremiereTimeTracker
+   chmod +x install_mac.sh
+   ./install_mac.sh
    ```
 
-2. Redémarrez Adobe Premiere Pro
+4. Redémarrez Adobe Premiere Pro
 
-3. Ouvrez : **Fenêtre > Extensions > Time Tracker**
+5. Ouvrez : **Fenêtre > Extensions > Time Tracker**
 
 ### Windows
 
