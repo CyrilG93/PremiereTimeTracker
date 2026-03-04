@@ -722,6 +722,12 @@ function checkProject() {
                 // Use path or name for project identification
                 var projectId = projectPath || projectName;
 
+                // Keep timer paused after auto-pause until user dismisses the warning once.
+                if (autoPauseWaitingForResume && !currentSession) {
+                    failedChecksCount = 0;
+                    return;
+                }
+
                 if (projectId !== lastProjectPath) {
                     // New project or first detection
                     log('Project detected: ' + (folderName || projectName || 'Unknown'));
@@ -739,6 +745,7 @@ function checkProject() {
 
             } else if (isOpen === false) {
                 // Project explicitly closed
+                autoPauseWaitingForResume = false;
                 handleFailedCheck('Project closed');
             } else {
                 // Missing required info but might have debug info
@@ -808,6 +815,18 @@ function startSession(info) {
         closeTime: null,
         duration: 0
     };
+
+    // Reset pause and activity state when a new session starts.
+    autoPauseWaitingForResume = false;
+    idleStartTime = null;
+    idleAlertShown = false;
+    idleAlertDismissed = false;
+    if (idleAlert) {
+        idleAlert.classList.remove('show');
+    }
+    // Give resumed tracking a full timeout window before next auto-pause check.
+    lastActivityTime = new Date();
+    lastProjectState = '';
 
     log('Session started: ' + currentSession.projectName);
 
@@ -1288,6 +1307,8 @@ function clearAllDataWithConfirmation() {
  */
 var idleStartTime = null;
 var idleAlertShown = false; // Flag to prevent repeated alerts
+var idleAlertDismissed = false; // Prevent repeated alerts after manual dismissal
+var autoPauseWaitingForResume = false; // Block auto-restart until user clicks once
 
 function startIdleDetection() {
     // Check every 30 seconds
@@ -1303,6 +1324,7 @@ function checkIdleState() {
             if (!idleStartTime) {
                 idleStartTime = new Date();
                 idleAlertShown = false; // Reset flag when idle timer starts
+                idleAlertDismissed = false; // Reset dismissal guard for a new idle cycle
             }
 
             // Check if idle timeout exceeded
@@ -1311,7 +1333,7 @@ function checkIdleState() {
 
             console.log('Idle time:', Math.floor(idleMs / 1000), 's, timeout:', settings.idleTimeout, 'min');
 
-            if (idleMs >= timeoutMs && !idleAlertShown) {
+            if (idleMs >= timeoutMs && !idleAlertShown && !idleAlertDismissed) {
                 showIdleAlert();
                 idleAlertShown = true; // Only show once
             }
@@ -1319,7 +1341,11 @@ function checkIdleState() {
             // Reset idle timer when tracking or no project
             idleStartTime = null;
             idleAlertShown = false;
-            idleAlert.classList.remove('show');
+            idleAlertDismissed = false;
+            autoPauseWaitingForResume = false;
+            if (idleAlert) {
+                idleAlert.classList.remove('show');
+            }
         }
     });
 }
@@ -1329,8 +1355,20 @@ function showIdleAlert() {
 }
 
 function dismissIdleAlert() {
-    idleAlert.classList.remove('show');
-    idleAlertShown = false;
+    if (idleAlert) {
+        idleAlert.classList.remove('show');
+    }
+    // Keep the alert dismissed until a new idle cycle starts.
+    idleAlertShown = true;
+    idleAlertDismissed = true;
+
+    // Resume tracking flow if this alert came from auto-pause.
+    if (autoPauseWaitingForResume) {
+        autoPauseWaitingForResume = false;
+        lastActivityTime = new Date();
+        lastProjectState = '';
+    }
+
     // Try to detect project again
     checkProject();
 }
@@ -1349,7 +1387,7 @@ function startActivityDetection() {
 
 function checkActivity() {
     // Only check if auto-pause is enabled and we're tracking
-    if (!settings.autoPause || !currentSession) {
+    if (!settings.autoPause || !currentSession || autoPauseWaitingForResume) {
         return;
     }
 
@@ -1375,7 +1413,13 @@ function checkActivity() {
                 lastProjectPath = '';
                 lastProjectInfo = null;
                 showNoProject();
-                alert('⏸️ Auto-pause: Aucune activité depuis ' + settings.idleTimeout + ' minutes.\nLe chrono a été arrêté.');
+                // Show one in-panel alert and wait for a single manual acknowledgement.
+                autoPauseWaitingForResume = true;
+                idleStartTime = new Date();
+                idleAlertShown = true;
+                idleAlertDismissed = false;
+                showIdleAlert();
+                log('Auto-pause triggered after inactivity. Waiting for manual resume.');
             }
         }
     });
