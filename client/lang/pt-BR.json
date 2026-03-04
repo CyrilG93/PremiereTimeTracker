@@ -47,5 +47,7 @@
         "fixedText": "Texto fixo",
         "fixedTextPlaceholder": "Texto...",
         "dateDayFirst": "Data (DD/MM/YYYY)"
-    }
+    },
+    "autoPauseIdleWarning": "Pausa automatica por inatividade.",
+    "autoPauseNotification": "⏸️ Pausa automatica: sem atividade por {minutes} minutos.\nO rastreamento esta pausado.\nClique em × no painel para retomar."
 }

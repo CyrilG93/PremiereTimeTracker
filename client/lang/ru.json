@@ -47,5 +47,7 @@
         "fixedText": "Фиксированный текст",
         "fixedTextPlaceholder": "Текст...",
         "dateDayFirst": "Дата (DD/MM/YYYY)"
-    }
+    },
+    "autoPauseIdleWarning": "Автопауза из-за отсутствия активности.",
+    "autoPauseNotification": "⏸️ Автопауза: нет активности в течение {minutes} минут.\nТрекинг приостановлен.\nНажмите × в панели, чтобы продолжить."
 }

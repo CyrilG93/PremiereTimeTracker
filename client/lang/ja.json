@@ -47,5 +47,7 @@
         "fixedText": "固定テキスト",
         "fixedTextPlaceholder": "テキスト...",
         "dateDayFirst": "日付 (DD/MM/YYYY)"
-    }
+    },
+    "autoPauseIdleWarning": "非アクティブのため自動一時停止中です。",
+    "autoPauseNotification": "⏸️ 自動一時停止: {minutes} 分間アクティビティがありません。\nトラッキングは一時停止されています。\n再開するにはパネルの × をクリックしてください。"
 }

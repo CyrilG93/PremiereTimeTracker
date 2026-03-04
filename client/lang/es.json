@@ -47,5 +47,7 @@
         "fixedText": "Texto fijo",
         "fixedTextPlaceholder": "Texto...",
         "dateDayFirst": "Fecha (DD/MM/YYYY)"
-    }
+    },
+    "autoPauseIdleWarning": "Pausa automatica por inactividad.",
+    "autoPauseNotification": "⏸️ Pausa automatica: sin actividad durante {minutes} minutos.\nEl seguimiento esta en pausa.\nHaz clic en × en el panel para reanudar."
 }

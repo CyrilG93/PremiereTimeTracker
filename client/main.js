@@ -16,6 +16,7 @@ var STORAGE_KEY = 'timeTracker_data';
 var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, closeSettingsBtn;
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
 var idleAlert, dismissIdleBtn, mainDisplay, autoPauseCheckbox;
+var idleAlertMessage;
 var logPanel, logContent, showLogsCheckbox, clearLogsBtn;
 var importCsvConfigBtn, exportCsvConfigBtn, csvConfigFileInput;
 var csvPresetNameInput, saveCsvPresetBtn, csvPresetSelect;
@@ -191,6 +192,7 @@ function init() {
     clearDataBtn = document.getElementById('clearDataBtn');
     clearAfterExportBtn = document.getElementById('clearAfterExportBtn');
     idleAlert = document.getElementById('idleAlert');
+    idleAlertMessage = document.getElementById('idleAlertMessage');
     dismissIdleBtn = document.getElementById('dismissIdleBtn');
     mainDisplay = document.getElementById('mainDisplay');
     logPanel = document.getElementById('logPanel');
@@ -880,9 +882,11 @@ function startSession(info) {
 
     // Reset pause and activity state when a new session starts.
     autoPauseWaitingForResume = false;
+    autoPauseDialogShown = false;
     idleStartTime = null;
     idleAlertShown = false;
     idleAlertDismissed = false;
+    resetIdleAlertMessage();
     if (idleAlert) {
         idleAlert.classList.remove('show');
     }
@@ -1345,7 +1349,37 @@ function applyTranslations() {
     // Re-render CSV controls and preset labels after language switch.
     renderCsvColumnsUI();
     renderCsvPresetOptions(csvPresetSelect ? csvPresetSelect.value : '');
+    // Keep idle alert text aligned with current pause state after language switch.
+    if (autoPauseWaitingForResume) {
+        setIdleAlertMessageAutoPause();
+    } else {
+        resetIdleAlertMessage();
+    }
     document.documentElement.lang = currentLang;
+}
+
+// Restore default idle warning text.
+function resetIdleAlertMessage() {
+    if (idleAlertMessage) {
+        idleAlertMessage.textContent = t('idleWarning');
+    }
+}
+
+// Show explicit auto-pause warning text in the panel alert.
+function setIdleAlertMessageAutoPause() {
+    if (idleAlertMessage) {
+        var autoPausePanelText = t('autoPauseIdleWarning');
+        idleAlertMessage.textContent = autoPausePanelText === 'autoPauseIdleWarning' ? 'Auto-paused due to inactivity.' : autoPausePanelText;
+    }
+}
+
+// Build modal notification text for auto-pause events with timeout interpolation.
+function getAutoPauseNotificationMessage() {
+    var template = t('autoPauseNotification');
+    if (template === 'autoPauseNotification') {
+        template = '⏸️ Auto-pause: no activity for {minutes} minutes.\nTracking is paused.\nClick × on the panel warning to resume.';
+    }
+    return template.replace('{minutes}', settings.idleTimeout);
 }
 
 /**
@@ -1381,6 +1415,7 @@ var idleStartTime = null;
 var idleAlertShown = false; // Flag to prevent repeated alerts
 var idleAlertDismissed = false; // Prevent repeated alerts after manual dismissal
 var autoPauseWaitingForResume = false; // Block auto-restart until user clicks once
+var autoPauseDialogShown = false; // Prevent repeated modal notifications for one auto-pause cycle
 
 function startIdleDetection() {
     // Check every 30 seconds
@@ -1397,6 +1432,7 @@ function checkIdleState() {
                 idleStartTime = new Date();
                 idleAlertShown = false; // Reset flag when idle timer starts
                 idleAlertDismissed = false; // Reset dismissal guard for a new idle cycle
+                resetIdleAlertMessage();
             }
 
             // Check if idle timeout exceeded
@@ -1415,6 +1451,8 @@ function checkIdleState() {
             idleAlertShown = false;
             idleAlertDismissed = false;
             autoPauseWaitingForResume = false;
+            autoPauseDialogShown = false;
+            resetIdleAlertMessage();
             if (idleAlert) {
                 idleAlert.classList.remove('show');
             }
@@ -1437,8 +1475,10 @@ function dismissIdleAlert() {
     // Resume tracking flow if this alert came from auto-pause.
     if (autoPauseWaitingForResume) {
         autoPauseWaitingForResume = false;
+        autoPauseDialogShown = false;
         lastActivityTime = new Date();
         lastProjectState = '';
+        resetIdleAlertMessage();
     }
 
     // Try to detect project again
@@ -1490,7 +1530,13 @@ function checkActivity() {
                 idleStartTime = new Date();
                 idleAlertShown = true;
                 idleAlertDismissed = false;
+                setIdleAlertMessageAutoPause();
                 showIdleAlert();
+                // Show one modal notification so auto-pause is always visible.
+                if (!autoPauseDialogShown) {
+                    autoPauseDialogShown = true;
+                    alert(getAutoPauseNotificationMessage());
+                }
                 log('Auto-pause triggered after inactivity. Waiting for manual resume.');
             }
         }

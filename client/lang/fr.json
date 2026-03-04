@@ -47,5 +47,7 @@
         "fixedText": "Texte fixe",
         "fixedTextPlaceholder": "Texte...",
         "dateDayFirst": "Date (DD/MM/YYYY)"
-    }
+    },
+    "autoPauseIdleWarning": "Auto-pause active (inactivite detectee).",
+    "autoPauseNotification": "⏸️ Auto-pause : aucune activite depuis {minutes} minutes.\nLe tracking est en pause.\nCliquez sur × dans le panneau pour reprendre."
 }
