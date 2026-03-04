@@ -66,6 +66,7 @@ var IDLE_CHECK_INTERVAL_MS = 30000; // Check for idle state every 30 seconds
 var ACTIVITY_CHECK_INTERVAL_MS = 10000; // Check activity every 10 seconds
 var AUTO_SAVE_INTERVAL_MS = 30000; // Auto-save every 30 seconds
 var CSV_COLUMN_COUNT = 14; // Total number of configurable CSV columns
+var SUPPORTED_LANGUAGE_CODES = ['de', 'en', 'es', 'fr', 'it', 'pt-BR', 'ru', 'ja', 'zh-CN']; // Supported UI languages
 
 // Auto-save interval
 var autoSaveInterval = null;
@@ -88,7 +89,10 @@ let CURRENT_VERSION = '1.3.0';
 function loadTranslations(lang, callback) {
     var fs = require('fs');
     var path = require('path');
-    var langPath = path.join(csInterface.getSystemPath(SystemPath.EXTENSION), 'client', 'lang', lang + '.json');
+    var extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+    var normalizedLang = normalizeLanguageCode(lang);
+    var langPath = path.join(extensionPath, 'client', 'lang', normalizedLang + '.json');
+    var fallbackPath = path.join(extensionPath, 'client', 'lang', 'en.json');
 
     // Default messages for update banner in all supported UI languages.
     const updateMessages = {
@@ -126,20 +130,48 @@ function loadTranslations(lang, callback) {
             var content = fs.readFileSync(langPath, 'utf8');
             translations = JSON.parse(content);
             // Merge update message
-            translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
+            translations.updateAvailable = updateMessages[normalizedLang] ? updateMessages[normalizedLang].updateAvailable : updateMessages['en'].updateAvailable;
             if (callback) callback();
         } catch (e) {
             console.error('Error loading translations:', e);
-            translations = {};
-            translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
-            if (callback) callback();
+            // Fall back to English file to avoid broken labels in UI.
+            loadFallbackTranslations(fs, fallbackPath, updateMessages, normalizedLang, callback);
         }
+    } else if (fs.existsSync(fallbackPath)) {
+        console.warn('Translation file not found, fallback to en:', langPath);
+        loadFallbackTranslations(fs, fallbackPath, updateMessages, normalizedLang, callback);
     } else {
-        console.warn('Translation file not found:', langPath);
+        console.warn('Translation file not found and no fallback available:', langPath);
         translations = {};
-        translations.updateAvailable = updateMessages[lang] ? updateMessages[lang].updateAvailable : updateMessages['en'].updateAvailable;
+        translations.updateAvailable = updateMessages[normalizedLang] ? updateMessages[normalizedLang].updateAvailable : updateMessages['en'].updateAvailable;
         if (callback) callback();
     }
+}
+
+// Validate language code and map unsupported/legacy values to a safe default.
+function normalizeLanguageCode(langCode) {
+    if (langCode === 'pt') {
+        return 'pt-BR';
+    }
+    if (langCode === 'zh') {
+        return 'zh-CN';
+    }
+    if (SUPPORTED_LANGUAGE_CODES.indexOf(langCode) !== -1) {
+        return langCode;
+    }
+    return 'en';
+}
+
+// Load English fallback translations when selected language file is missing/invalid.
+function loadFallbackTranslations(fs, fallbackPath, updateMessages, selectedLang, callback) {
+    try {
+        translations = JSON.parse(fs.readFileSync(fallbackPath, 'utf8'));
+    } catch (fallbackError) {
+        console.error('Error loading fallback translations:', fallbackError);
+        translations = {};
+    }
+    translations.updateAvailable = updateMessages[selectedLang] ? updateMessages[selectedLang].updateAvailable : updateMessages['en'].updateAvailable;
+    if (callback) callback();
 }
 
 /**
@@ -449,6 +481,7 @@ function loadData() {
 
             // Load settings with defaults
             settings = Object.assign(settings, parsed.settings || {});
+            settings.language = normalizeLanguageCode(settings.language);
             // Keep the CSV config shape stable to avoid invalid entries in UI/export.
             settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
             // Keep preset list valid and resilient to malformed entries.
@@ -461,6 +494,7 @@ function loadData() {
                 var parsed = JSON.parse(oldData);
                 sessions = parsed.sessions || [];
                 settings = Object.assign(settings, parsed.settings || {});
+                settings.language = normalizeLanguageCode(settings.language);
                 // Keep the CSV config shape stable to avoid invalid entries in UI/export.
                 settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
                 // Keep preset list valid and resilient to malformed entries.
@@ -1249,7 +1283,9 @@ function hideSettings() {
  * Language change handler
  */
 function onLanguageChange() {
-    var newLang = languageSelect.value;
+    var newLang = normalizeLanguageCode(languageSelect.value);
+    languageSelect.value = newLang;
+    currentLang = newLang;
     settings.language = newLang;
     saveSettings();
     loadTranslations(newLang, function () {

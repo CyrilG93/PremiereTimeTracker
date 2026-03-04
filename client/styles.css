@@ -293,6 +293,11 @@ body {
     font-size: 10px;
 }
 
+/* Keep language names readable in the dropdown. */
+#languageSelect {
+    width: 140px;
+}
+
 .setting-row input[type="checkbox"] {
     width: 14px;
     height: 14px;
