@@ -3,7 +3,7 @@
  * Tracks time spent on projects and exports to CSV
  * 
  * @author CyrilG93
- * @version 1.1.1
+ * @version 1.3.0
  */
 
 // CSInterface wrapper for communication with Premiere Pro
@@ -82,7 +82,7 @@ var activityCheckInterval = null;
 // UPDATE SYSTEM CONSTANTS & TRANSLATIONS
 // ============================================================================
 const GITHUB_REPO = 'CyrilG93/PremiereTimeTracker';
-let CURRENT_VERSION = '1.2.0';
+let CURRENT_VERSION = '1.3.0';
 
 // Update translations with update message
 function loadTranslations(lang, callback) {

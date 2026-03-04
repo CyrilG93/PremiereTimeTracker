@@ -3,7 +3,7 @@
  * Provides access to project information
  * 
  * @author CyrilG93
- * @version 1.1.1
+ * @version 1.3.0
  */
 
 /**
