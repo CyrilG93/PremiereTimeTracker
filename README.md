@@ -77,6 +77,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - **Timeout**: Delay before auto-pause (default: 30 min)
 - **Language**: Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - **CSV Columns**: Customize the content of the 14 export columns
+- **Localized labels**: CSV column type options and Debug Logs labels follow the selected language
 - **CSV Config Import/Export**: Save the current column setup to JSON and import it on another machine
 - **CSV Presets**: Save the current setup with a custom name and load presets sorted alphabetically
 - **Debug Logs**: Displays the log panel to diagnose issues
@@ -199,6 +200,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - **Timeout** : Délai avant auto-pause (défaut: 30 min)
 - **Langue** : Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - **Colonnes CSV** : Personnalisez le contenu des 14 colonnes d'export
+- **Libellés localisés** : Les options du type de colonne CSV et les labels Debug Logs suivent la langue sélectionnée
 - **Import/Export config CSV** : Sauvegardez la configuration actuelle en JSON et importez-la sur une autre machine
 - **Presets CSV** : Sauvegardez la config actuelle avec un nom personnalisé et chargez les presets en ordre alphabétique
 - **Debug Logs** : Affiche le panneau de logs pour diagnostiquer les problèmes

@@ -26,6 +26,25 @@
         "exportCsvConfig": "Экспорт конфигурации",
         "saveCsvPreset": "Сохранить пресет",
         "selectCsvPreset": "Загрузить пресет...",
-        "csvPresetPlaceholder": "Имя пресета"
+        "csvPresetPlaceholder": "Имя пресета",
+        "debugLogs": "Журналы отладки"
+    },
+    "logs": {
+        "title": "Журналы отладки",
+        "copyTitle": "Копировать логи",
+        "clearTitle": "Очистить логи"
+    },
+    "csvColumnTypes": {
+        "empty": "Пусто",
+        "dateShort": "Дата (M/D/YYYY)",
+        "timeOpen": "Время открытия",
+        "timeClose": "Время закрытия",
+        "duration": "Длительность (H:MM)",
+        "platform": "Платформа",
+        "projectName": "Имя проекта",
+        "projectFile": "Файл проекта",
+        "projectPath": "Путь проекта",
+        "fixedText": "Фиксированный текст",
+        "fixedTextPlaceholder": "Текст..."
     }
 }

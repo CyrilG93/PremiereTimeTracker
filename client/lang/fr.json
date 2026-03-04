@@ -26,6 +26,25 @@
         "exportCsvConfig": "Exporter Config",
         "saveCsvPreset": "Sauver Preset",
         "selectCsvPreset": "Charger un preset...",
-        "csvPresetPlaceholder": "Nom du preset"
+        "csvPresetPlaceholder": "Nom du preset",
+        "debugLogs": "Logs debug"
+    },
+    "logs": {
+        "title": "Logs debug",
+        "copyTitle": "Copier les logs",
+        "clearTitle": "Effacer les logs"
+    },
+    "csvColumnTypes": {
+        "empty": "Vide",
+        "dateShort": "Date (M/J/AAAA)",
+        "timeOpen": "Heure ouverture",
+        "timeClose": "Heure fermeture",
+        "duration": "Duree (H:MM)",
+        "platform": "Plateforme",
+        "projectName": "Nom du projet",
+        "projectFile": "Fichier projet",
+        "projectPath": "Chemin du projet",
+        "fixedText": "Texte fixe",
+        "fixedTextPlaceholder": "Texte..."
     }
 }

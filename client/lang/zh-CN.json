@@ -26,6 +26,25 @@
         "exportCsvConfig": "导出配置",
         "saveCsvPreset": "保存预设",
         "selectCsvPreset": "加载预设...",
-        "csvPresetPlaceholder": "预设名称"
+        "csvPresetPlaceholder": "预设名称",
+        "debugLogs": "调试日志"
+    },
+    "logs": {
+        "title": "调试日志",
+        "copyTitle": "复制日志",
+        "clearTitle": "清空日志"
+    },
+    "csvColumnTypes": {
+        "empty": "空",
+        "dateShort": "日期 (M/D/YYYY)",
+        "timeOpen": "开始时间",
+        "timeClose": "结束时间",
+        "duration": "时长 (H:MM)",
+        "platform": "平台",
+        "projectName": "项目名称",
+        "projectFile": "项目文件",
+        "projectPath": "项目路径",
+        "fixedText": "固定文本",
+        "fixedTextPlaceholder": "文本..."
     }
 }

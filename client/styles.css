@@ -436,7 +436,7 @@ body {
     margin-top: 8px;
     border: 1px solid #444;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .csv-config-header {
@@ -460,8 +460,7 @@ body {
 
 .csv-config-content {
     display: none;
-    max-height: 200px;
-    overflow-y: auto;
+    overflow: visible;
     background: #1a1a1a;
 }
 
@@ -533,6 +532,11 @@ body {
     color: #e0e0e0;
 }
 
+#csvColumnsContainer {
+    max-height: 220px;
+    overflow-y: auto;
+}
+
 .csv-column-row {
     display: flex;
     align-items: center;
@@ -552,14 +556,81 @@ body {
     color: #888;
 }
 
-.csv-column-select {
+.csv-column-type-wrapper {
+    position: relative;
     flex: 1;
-    padding: 2px 4px;
+    min-width: 0;
+}
+
+.csv-column-type-btn {
+    width: 100%;
+    text-align: left;
+    padding: 2px 18px 2px 4px;
     font-size: 9px;
     background: #2a2a2a;
     border: 1px solid #444;
     border-radius: 2px;
     color: #e0e0e0;
+    cursor: pointer;
+    position: relative;
+}
+
+.csv-column-type-btn::after {
+    content: "▼";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 7px;
+    color: #aaa;
+}
+
+.csv-column-type-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 2px);
+    display: none;
+    background: #1f1f1f;
+    border: 1px solid #555;
+    border-radius: 2px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.csv-column-type-menu.show {
+    display: block;
+}
+
+.csv-column-type-menu.open-up {
+    top: auto;
+    bottom: calc(100% + 2px);
+}
+
+.csv-column-type-option {
+    width: 100%;
+    text-align: left;
+    padding: 2px 4px;
+    font-size: 9px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+
+.csv-column-type-option:last-child {
+    border-bottom: none;
+}
+
+.csv-column-type-option:hover {
+    background: #2f2f2f;
+}
+
+.csv-column-type-option.selected {
+    background: #244057;
+    color: #cbe8ff;
 }
 
 .csv-column-value {

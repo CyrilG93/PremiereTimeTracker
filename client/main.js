@@ -266,6 +266,13 @@ function init() {
     }
     renderCsvColumnsUI();
     renderCsvPresetOptions();
+    // Close custom CSV menus when clicking elsewhere, scrolling, or resizing.
+    document.addEventListener('click', onDocumentClickCloseCsvTypeMenus);
+    var csvColumnsContainer = document.getElementById('csvColumnsContainer');
+    if (csvColumnsContainer) {
+        csvColumnsContainer.addEventListener('scroll', closeAllCsvTypeMenus);
+    }
+    window.addEventListener('resize', closeAllCsvTypeMenus);
 
     // Start polling for project changes
     startTracking();
@@ -1321,6 +1328,13 @@ function applyTranslations() {
         elements[i].textContent = t(key);
     }
 
+    // Apply translated titles for tooltip attributes.
+    var titledElements = document.querySelectorAll('[data-i18n-title]');
+    for (var k = 0; k < titledElements.length; k++) {
+        var titleKey = titledElements[k].getAttribute('data-i18n-title');
+        titledElements[k].setAttribute('title', t(titleKey));
+    }
+
     // Apply translated placeholders for input fields.
     var placeholders = document.querySelectorAll('[data-i18n-placeholder]');
     for (var j = 0; j < placeholders.length; j++) {
@@ -1328,7 +1342,8 @@ function applyTranslations() {
         placeholders[j].setAttribute('placeholder', t(placeholderKey));
     }
 
-    // Re-render preset labels after language switch.
+    // Re-render CSV controls and preset labels after language switch.
+    renderCsvColumnsUI();
     renderCsvPresetOptions(csvPresetSelect ? csvPresetSelect.value : '');
     document.documentElement.lang = currentLang;
 }
@@ -1582,16 +1597,16 @@ function clearLogs() {
  * CSV Column Configuration
  */
 var CSV_COLUMN_TYPES = [
-    { value: 'empty', label: 'Empty' },
-    { value: 'dateShort', label: 'Date (M/D/YYYY)' },
-    { value: 'timeOpen', label: 'Time Open' },
-    { value: 'timeClose', label: 'Time Close' },
-    { value: 'duration', label: 'Duration (H:MM)' },
-    { value: 'platform', label: 'Platform' },
-    { value: 'projectName', label: 'Project Name' },
-    { value: 'projectFile', label: 'Project File' },
-    { value: 'projectPath', label: 'Project Path' },
-    { value: 'fixedText', label: 'Fixed Text' }
+    { value: 'empty', labelKey: 'csvColumnTypes.empty', fallbackLabel: 'Empty' },
+    { value: 'dateShort', labelKey: 'csvColumnTypes.dateShort', fallbackLabel: 'Date (M/D/YYYY)' },
+    { value: 'timeOpen', labelKey: 'csvColumnTypes.timeOpen', fallbackLabel: 'Time Open' },
+    { value: 'timeClose', labelKey: 'csvColumnTypes.timeClose', fallbackLabel: 'Time Close' },
+    { value: 'duration', labelKey: 'csvColumnTypes.duration', fallbackLabel: 'Duration (H:MM)' },
+    { value: 'platform', labelKey: 'csvColumnTypes.platform', fallbackLabel: 'Platform' },
+    { value: 'projectName', labelKey: 'csvColumnTypes.projectName', fallbackLabel: 'Project Name' },
+    { value: 'projectFile', labelKey: 'csvColumnTypes.projectFile', fallbackLabel: 'Project File' },
+    { value: 'projectPath', labelKey: 'csvColumnTypes.projectPath', fallbackLabel: 'Project Path' },
+    { value: 'fixedText', labelKey: 'csvColumnTypes.fixedText', fallbackLabel: 'Fixed Text' }
 ];
 
 function toggleCsvConfig() {
@@ -1599,6 +1614,28 @@ function toggleCsvConfig() {
     if (content) {
         content.classList.toggle('show');
     }
+}
+
+// Translate CSV option labels while keeping a safe fallback.
+function getCsvTypeLabel(typeValue) {
+    var matchedType = null;
+    for (var i = 0; i < CSV_COLUMN_TYPES.length; i++) {
+        if (CSV_COLUMN_TYPES[i].value === typeValue) {
+            matchedType = CSV_COLUMN_TYPES[i];
+            break;
+        }
+    }
+    if (!matchedType) {
+        return typeValue || '';
+    }
+    var translatedLabel = t(matchedType.labelKey);
+    return translatedLabel === matchedType.labelKey ? matchedType.fallbackLabel : translatedLabel;
+}
+
+// Translate fixed-text input placeholder with a safe English fallback.
+function getCsvFixedTextPlaceholder() {
+    var translatedPlaceholder = t('csvColumnTypes.fixedTextPlaceholder');
+    return translatedPlaceholder === 'csvColumnTypes.fixedTextPlaceholder' ? 'Text...' : translatedPlaceholder;
 }
 
 function renderCsvColumnsUI() {
@@ -1616,28 +1653,38 @@ function renderCsvColumnsUI() {
 
         html += '<div class="csv-column-row">';
         html += '<span class="csv-column-letter">' + letters[i] + '</span>';
-        html += '<select class="csv-column-select" data-col="' + i + '">';
+        html += '<div class="csv-column-type-wrapper">';
+        html += '<button type="button" class="csv-column-type-btn" data-col="' + i + '">' + escapeHtml(getCsvTypeLabel(col.type)) + '</button>';
+        html += '<div class="csv-column-type-menu" data-col="' + i + '">';
 
         for (var j = 0; j < CSV_COLUMN_TYPES.length; j++) {
             var opt = CSV_COLUMN_TYPES[j];
-            var selected = col.type === opt.value ? ' selected' : '';
-            html += '<option value="' + opt.value + '"' + selected + '>' + opt.label + '</option>';
+            var selectedClass = col.type === opt.value ? ' selected' : '';
+            html += '<button type="button" class="csv-column-type-option' + selectedClass + '" data-col="' + i + '" data-value="' + opt.value + '">';
+            html += escapeHtml(getCsvTypeLabel(opt.value));
+            html += '</button>';
         }
 
-        html += '</select>';
+        html += '</div>';
+        html += '</div>';
         html += '<input type="text" class="csv-column-value' + (col.type === 'fixedText' ? ' show' : '') + '" ';
-        html += 'data-col="' + i + '" value="' + (col.value || '') + '" placeholder="Text...">';
+        html += 'data-col="' + i + '" value="' + escapeHtml(col.value || '') + '" placeholder="' + escapeHtml(getCsvFixedTextPlaceholder()) + '">';
         html += '</div>';
     }
 
     container.innerHTML = html;
 
     // Add event listeners
-    var selects = container.querySelectorAll('.csv-column-select');
+    var typeButtons = container.querySelectorAll('.csv-column-type-btn');
+    var typeOptions = container.querySelectorAll('.csv-column-type-option');
     var inputs = container.querySelectorAll('.csv-column-value');
 
-    selects.forEach(function (select) {
-        select.addEventListener('change', onCsvColumnTypeChange);
+    typeButtons.forEach(function (button) {
+        button.addEventListener('click', onCsvTypeButtonClick);
+    });
+
+    typeOptions.forEach(function (option) {
+        option.addEventListener('click', onCsvTypeOptionClick);
     });
 
     inputs.forEach(function (input) {
@@ -1645,24 +1692,90 @@ function renderCsvColumnsUI() {
     });
 }
 
-function onCsvColumnTypeChange(e) {
-    var colIndex = parseInt(e.target.getAttribute('data-col'));
-    var newType = e.target.value;
+// Open/close CSV type menu and position it above when space below is tight.
+function onCsvTypeButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-    settings.csvColumns[colIndex].type = newType;
-
-    // Show/hide text input
-    var input = e.target.parentElement.querySelector('.csv-column-value');
-    if (input) {
-        if (newType === 'fixedText') {
-            input.classList.add('show');
-        } else {
-            input.classList.remove('show');
-            settings.csvColumns[colIndex].value = '';
-        }
+    var menu = e.currentTarget.parentElement.querySelector('.csv-column-type-menu');
+    if (!menu) {
+        return;
     }
 
+    var shouldOpen = !menu.classList.contains('show');
+    closeAllCsvTypeMenus();
+    if (!shouldOpen) {
+        return;
+    }
+
+    positionCsvTypeMenu(e.currentTarget, menu);
+    menu.classList.add('show');
+}
+
+// Apply selected CSV type and re-render the row controls.
+function onCsvTypeOptionClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var colIndex = parseInt(e.currentTarget.getAttribute('data-col'), 10);
+    var newType = e.currentTarget.getAttribute('data-value');
+    if (isNaN(colIndex) || !newType) {
+        return;
+    }
+
+    settings.csvColumns[colIndex].type = newType;
+    if (newType !== 'fixedText') {
+        settings.csvColumns[colIndex].value = '';
+    }
+    closeAllCsvTypeMenus();
+    renderCsvColumnsUI();
     saveSettings();
+}
+
+// Position menu depending on available visible space in the CSV table area.
+function positionCsvTypeMenu(triggerBtn, menu) {
+    var container = document.getElementById('csvColumnsContainer');
+    if (!container) {
+        return;
+    }
+
+    menu.classList.remove('open-up');
+    menu.style.maxHeight = '';
+
+    var triggerRect = triggerBtn.getBoundingClientRect();
+    var containerRect = container.getBoundingClientRect();
+    var spaceBelow = Math.floor(containerRect.bottom - triggerRect.bottom - 4);
+    var spaceAbove = Math.floor(triggerRect.top - containerRect.top - 4);
+    var openUpward = spaceBelow < 120 && spaceAbove > spaceBelow;
+    var availableSpace = openUpward ? spaceAbove : spaceBelow;
+
+    if (openUpward) {
+        menu.classList.add('open-up');
+    }
+    // Limit menu size to available area so options remain visible and scrollable.
+    menu.style.maxHeight = (availableSpace > 0 ? availableSpace : 120) + 'px';
+}
+
+// Close all open CSV type menus.
+function closeAllCsvTypeMenus() {
+    var container = document.getElementById('csvColumnsContainer');
+    if (!container) {
+        return;
+    }
+    var openMenus = container.querySelectorAll('.csv-column-type-menu.show');
+    openMenus.forEach(function (menu) {
+        menu.classList.remove('show');
+        menu.classList.remove('open-up');
+        menu.style.maxHeight = '';
+    });
+}
+
+// Close menus when user clicks anywhere outside a CSV type control.
+function onDocumentClickCloseCsvTypeMenus(e) {
+    if (e.target && e.target.closest && e.target.closest('.csv-column-type-wrapper')) {
+        return;
+    }
+    closeAllCsvTypeMenus();
 }
 
 function onCsvColumnValueChange(e) {

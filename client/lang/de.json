@@ -26,6 +26,25 @@
         "exportCsvConfig": "Konfig exportieren",
         "saveCsvPreset": "Preset speichern",
         "selectCsvPreset": "Preset laden...",
-        "csvPresetPlaceholder": "Preset-Name"
+        "csvPresetPlaceholder": "Preset-Name",
+        "debugLogs": "Debug-Protokolle"
+    },
+    "logs": {
+        "title": "Debug-Protokolle",
+        "copyTitle": "Protokolle kopieren",
+        "clearTitle": "Protokolle leeren"
+    },
+    "csvColumnTypes": {
+        "empty": "Leer",
+        "dateShort": "Datum (M/T/JJJJ)",
+        "timeOpen": "Oeffnungszeit",
+        "timeClose": "Schliesszeit",
+        "duration": "Dauer (H:MM)",
+        "platform": "Plattform",
+        "projectName": "Projektname",
+        "projectFile": "Projektdatei",
+        "projectPath": "Projektpfad",
+        "fixedText": "Fester Text",
+        "fixedTextPlaceholder": "Text..."
     }
 }

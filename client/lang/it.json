@@ -26,6 +26,25 @@
         "exportCsvConfig": "Esporta config",
         "saveCsvPreset": "Salva preset",
         "selectCsvPreset": "Carica preset...",
-        "csvPresetPlaceholder": "Nome preset"
+        "csvPresetPlaceholder": "Nome preset",
+        "debugLogs": "Log di debug"
+    },
+    "logs": {
+        "title": "Log di debug",
+        "copyTitle": "Copia log",
+        "clearTitle": "Cancella log"
+    },
+    "csvColumnTypes": {
+        "empty": "Vuoto",
+        "dateShort": "Data (M/G/AAAA)",
+        "timeOpen": "Ora apertura",
+        "timeClose": "Ora chiusura",
+        "duration": "Durata (H:MM)",
+        "platform": "Piattaforma",
+        "projectName": "Nome progetto",
+        "projectFile": "File progetto",
+        "projectPath": "Percorso progetto",
+        "fixedText": "Testo fisso",
+        "fixedTextPlaceholder": "Testo..."
     }
 }

@@ -83,7 +83,7 @@
                     </select>
                 </div>
                 <div class="setting-row">
-                    <label for="showLogs">Debug Logs</label>
+                    <label for="showLogs" data-i18n="settings.debugLogs">Debug Logs</label>
                     <input type="checkbox" id="showLogs">
                 </div>
 
@@ -117,10 +117,10 @@
         <!-- Debug Log Panel -->
         <div class="log-panel" id="logPanel">
             <div class="log-header">
-                <span>📋 Debug Logs</span>
+                <span data-i18n="logs.title">📋 Debug Logs</span>
                 <div>
-                    <button id="copyLogsBtn" class="icon-btn" title="Copy logs">📋</button>
-                    <button id="clearLogsBtn" class="icon-btn" title="Clear logs">🗑️</button>
+                    <button id="copyLogsBtn" class="icon-btn" title="Copy logs" data-i18n-title="logs.copyTitle">📋</button>
+                    <button id="clearLogsBtn" class="icon-btn" title="Clear logs" data-i18n-title="logs.clearTitle">🗑️</button>
                 </div>
             </div>
             <div class="log-content" id="logContent"></div>

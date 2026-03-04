@@ -26,6 +26,25 @@
         "exportCsvConfig": "設定をエクスポート",
         "saveCsvPreset": "プリセットを保存",
         "selectCsvPreset": "プリセットを読み込む...",
-        "csvPresetPlaceholder": "プリセット名"
+        "csvPresetPlaceholder": "プリセット名",
+        "debugLogs": "デバッグログ"
+    },
+    "logs": {
+        "title": "デバッグログ",
+        "copyTitle": "ログをコピー",
+        "clearTitle": "ログをクリア"
+    },
+    "csvColumnTypes": {
+        "empty": "空",
+        "dateShort": "日付 (M/D/YYYY)",
+        "timeOpen": "開始時刻",
+        "timeClose": "終了時刻",
+        "duration": "時間 (H:MM)",
+        "platform": "プラットフォーム",
+        "projectName": "プロジェクト名",
+        "projectFile": "プロジェクトファイル",
+        "projectPath": "プロジェクトパス",
+        "fixedText": "固定テキスト",
+        "fixedTextPlaceholder": "テキスト..."
     }
 }
