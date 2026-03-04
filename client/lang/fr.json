@@ -45,6 +45,7 @@
         "projectFile": "Fichier projet",
         "projectPath": "Chemin du projet",
         "fixedText": "Texte fixe",
-        "fixedTextPlaceholder": "Texte..."
+        "fixedTextPlaceholder": "Texte...",
+        "dateUsCompact": "Date (MMJJAAAA)"
     }
 }

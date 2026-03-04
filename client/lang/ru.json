@@ -45,6 +45,7 @@
         "projectFile": "Файл проекта",
         "projectPath": "Путь проекта",
         "fixedText": "Фиксированный текст",
-        "fixedTextPlaceholder": "Текст..."
+        "fixedTextPlaceholder": "Текст...",
+        "dateUsCompact": "Дата (MMDDYYYY)"
     }
 }

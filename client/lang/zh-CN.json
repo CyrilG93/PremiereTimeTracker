@@ -45,6 +45,7 @@
         "projectFile": "项目文件",
         "projectPath": "项目路径",
         "fixedText": "固定文本",
-        "fixedTextPlaceholder": "文本..."
+        "fixedTextPlaceholder": "文本...",
+        "dateUsCompact": "日期 (MMDDYYYY)"
     }
 }

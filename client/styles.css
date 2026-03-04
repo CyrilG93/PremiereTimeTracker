@@ -533,8 +533,7 @@ body {
 }
 
 #csvColumnsContainer {
-    max-height: 220px;
-    overflow-y: auto;
+    overflow: visible;
 }
 
 .csv-column-row {

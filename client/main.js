@@ -268,9 +268,9 @@ function init() {
     renderCsvPresetOptions();
     // Close custom CSV menus when clicking elsewhere, scrolling, or resizing.
     document.addEventListener('click', onDocumentClickCloseCsvTypeMenus);
-    var csvColumnsContainer = document.getElementById('csvColumnsContainer');
-    if (csvColumnsContainer) {
-        csvColumnsContainer.addEventListener('scroll', closeAllCsvTypeMenus);
+    var settingsContent = document.querySelector('.settings-content');
+    if (settingsContent) {
+        settingsContent.addEventListener('scroll', closeAllCsvTypeMenus);
     }
     window.addEventListener('resize', closeAllCsvTypeMenus);
 
@@ -1599,6 +1599,7 @@ function clearLogs() {
 var CSV_COLUMN_TYPES = [
     { value: 'empty', labelKey: 'csvColumnTypes.empty', fallbackLabel: 'Empty' },
     { value: 'dateShort', labelKey: 'csvColumnTypes.dateShort', fallbackLabel: 'Date (M/D/YYYY)' },
+    { value: 'dateUsCompact', labelKey: 'csvColumnTypes.dateUsCompact', fallbackLabel: 'Date (MMDDYYYY)' },
     { value: 'timeOpen', labelKey: 'csvColumnTypes.timeOpen', fallbackLabel: 'Time Open' },
     { value: 'timeClose', labelKey: 'csvColumnTypes.timeClose', fallbackLabel: 'Time Close' },
     { value: 'duration', labelKey: 'csvColumnTypes.duration', fallbackLabel: 'Duration (H:MM)' },
@@ -1734,8 +1735,8 @@ function onCsvTypeOptionClick(e) {
 
 // Position menu depending on available visible space in the CSV table area.
 function positionCsvTypeMenu(triggerBtn, menu) {
-    var container = document.getElementById('csvColumnsContainer');
-    if (!container) {
+    var viewportHost = triggerBtn.closest('.settings-content');
+    if (!viewportHost) {
         return;
     }
 
@@ -1743,9 +1744,10 @@ function positionCsvTypeMenu(triggerBtn, menu) {
     menu.style.maxHeight = '';
 
     var triggerRect = triggerBtn.getBoundingClientRect();
-    var containerRect = container.getBoundingClientRect();
-    var spaceBelow = Math.floor(containerRect.bottom - triggerRect.bottom - 4);
-    var spaceAbove = Math.floor(triggerRect.top - containerRect.top - 4);
+    var viewportRect = viewportHost.getBoundingClientRect();
+    // Compute free space in the currently visible settings viewport.
+    var spaceBelow = Math.floor(viewportRect.bottom - triggerRect.bottom - 4);
+    var spaceAbove = Math.floor(triggerRect.top - viewportRect.top - 4);
     var openUpward = spaceBelow < 120 && spaceAbove > spaceBelow;
     var availableSpace = openUpward ? spaceAbove : spaceBelow;
 
@@ -1981,6 +1983,8 @@ function getColumnValue(session, colConfig, openDate, closeDate) {
             return '';
         case 'dateShort':
             return formatDateShort(openDate);
+        case 'dateUsCompact':
+            return formatDateUsCompact(openDate);
         case 'timeOpen':
             return formatTime12h(openDate);
         case 'timeClose':
@@ -2000,6 +2004,14 @@ function getColumnValue(session, colConfig, openDate, closeDate) {
         default:
             return '';
     }
+}
+
+// Format date as MMDDYYYY (US compact format).
+function formatDateUsCompact(date) {
+    var month = pad(date.getMonth() + 1);
+    var day = pad(date.getDate());
+    var year = date.getFullYear();
+    return month + day + year;
 }
 
 // Initialize when DOM is ready

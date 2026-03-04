@@ -45,6 +45,7 @@
         "projectFile": "プロジェクトファイル",
         "projectPath": "プロジェクトパス",
         "fixedText": "固定テキスト",
-        "fixedTextPlaceholder": "テキスト..."
+        "fixedTextPlaceholder": "テキスト...",
+        "dateUsCompact": "日付 (MMDDYYYY)"
     }
 }
