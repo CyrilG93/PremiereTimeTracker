@@ -17,6 +17,7 @@ var timeDisplay, projectName, totalTime, exportBtn, settingsBtn, settingsPanel, 
 var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearAfterExportBtn;
 var idleAlert, dismissIdleBtn, mainDisplay, autoPauseCheckbox;
 var logPanel, logContent, showLogsCheckbox, clearLogsBtn;
+var importCsvConfigBtn, exportCsvConfigBtn, csvConfigFileInput;
 
 // State
 var currentSession = null;
@@ -62,6 +63,7 @@ var DISPLAY_INTERVAL_MS = 1000;   // Timer display update
 var IDLE_CHECK_INTERVAL_MS = 30000; // Check for idle state every 30 seconds
 var ACTIVITY_CHECK_INTERVAL_MS = 10000; // Check activity every 10 seconds
 var AUTO_SAVE_INTERVAL_MS = 30000; // Auto-save every 30 seconds
+var CSV_COLUMN_COUNT = 14; // Total number of configurable CSV columns
 
 // Auto-save interval
 var autoSaveInterval = null;
@@ -140,6 +142,9 @@ function init() {
     logContent = document.getElementById('logContent');
     showLogsCheckbox = document.getElementById('showLogs');
     clearLogsBtn = document.getElementById('clearLogsBtn');
+    importCsvConfigBtn = document.getElementById('importCsvConfigBtn');
+    exportCsvConfigBtn = document.getElementById('exportCsvConfigBtn');
+    csvConfigFileInput = document.getElementById('csvConfigFileInput');
 
     // Load saved data
     loadData();
@@ -185,6 +190,15 @@ function init() {
     var csvConfigToggle = document.getElementById('csvConfigToggle');
     if (csvConfigToggle) {
         csvConfigToggle.addEventListener('click', toggleCsvConfig);
+    }
+    if (importCsvConfigBtn) {
+        importCsvConfigBtn.addEventListener('click', triggerCsvConfigImport);
+    }
+    if (exportCsvConfigBtn) {
+        exportCsvConfigBtn.addEventListener('click', exportCsvConfig);
+    }
+    if (csvConfigFileInput) {
+        csvConfigFileInput.addEventListener('change', onCsvConfigFileSelected);
     }
     renderCsvColumnsUI();
 
@@ -402,6 +416,8 @@ function loadData() {
 
             // Load settings with defaults
             settings = Object.assign(settings, parsed.settings || {});
+            // Keep the CSV config shape stable to avoid invalid entries in UI/export.
+            settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
             log('Data loaded from file: ' + sessions.length + ' sessions');
         } else {
             // Try to migrate from localStorage
@@ -410,6 +426,8 @@ function loadData() {
                 var parsed = JSON.parse(oldData);
                 sessions = parsed.sessions || [];
                 settings = Object.assign(settings, parsed.settings || {});
+                // Keep the CSV config shape stable to avoid invalid entries in UI/export.
+                settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
                 log('Migrated ' + sessions.length + ' sessions from localStorage');
                 // Save to file and clear localStorage
                 saveData();
@@ -1066,7 +1084,7 @@ function generateCSV(sessions) {
 
         // Build row based on custom column configuration
         var row = [];
-        for (var i = 0; i < 14; i++) {
+        for (var i = 0; i < CSV_COLUMN_COUNT; i++) {
             var colConfig = settings.csvColumns[i] || { type: 'empty', value: '' };
             row.push(getColumnValue(session, colConfig, openDate, closeDate));
         }
@@ -1460,10 +1478,13 @@ function renderCsvColumnsUI() {
     var container = document.getElementById('csvColumnsContainer');
     if (!container) return;
 
+    // Always normalize before rendering so every row has a valid config object.
+    settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
+
     var letters = 'ABCDEFGHIJKLMN'.split('');
     var html = '';
 
-    for (var i = 0; i < 14; i++) {
+    for (var i = 0; i < CSV_COLUMN_COUNT; i++) {
         var col = settings.csvColumns[i] || { type: 'empty', value: '' };
 
         html += '<div class="csv-column-row">';
@@ -1521,6 +1542,102 @@ function onCsvColumnValueChange(e) {
     var colIndex = parseInt(e.target.getAttribute('data-col'));
     settings.csvColumns[colIndex].value = e.target.value;
     saveSettings();
+}
+
+// Normalize imported/saved CSV column configs to exactly 14 safe entries.
+function normalizeCsvColumnsConfig(columns) {
+    var normalized = [];
+    var allowedTypes = CSV_COLUMN_TYPES.map(function (type) {
+        return type.value;
+    });
+
+    for (var i = 0; i < CSV_COLUMN_COUNT; i++) {
+        var rawCol = Array.isArray(columns) && columns[i] ? columns[i] : {};
+        var type = typeof rawCol.type === 'string' ? rawCol.type : 'empty';
+
+        if (allowedTypes.indexOf(type) === -1) {
+            type = 'empty';
+        }
+
+        normalized.push({
+            type: type,
+            value: type === 'fixedText' && typeof rawCol.value === 'string' ? rawCol.value : ''
+        });
+    }
+
+    return normalized;
+}
+
+// Export current CSV table configuration as a JSON file.
+function exportCsvConfig() {
+    try {
+        var fs = require('fs');
+        var os = require('os');
+        var path = require('path');
+
+        settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
+        var filename = 'TimeTracker_CSV_Config_' + formatDateForFilename(new Date()) + '.json';
+        var desktopPath = path.join(os.homedir(), 'Desktop');
+        var filePath = path.join(desktopPath, filename);
+        var payload = {
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            csvColumns: settings.csvColumns
+        };
+
+        fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
+        log('CSV configuration exported to: ' + filePath);
+        alert((t('csvConfigExportSuccess') || 'CSV configuration exported!') + '\n\n' + filePath);
+    } catch (e) {
+        console.error('Error exporting CSV configuration:', e);
+        log('CSV config export failed: ' + e.message, 'error');
+        alert((t('csvConfigExportError') || 'Failed to export CSV configuration: ') + e.message);
+    }
+}
+
+// Trigger hidden file input so user can pick a config JSON from disk.
+function triggerCsvConfigImport() {
+    if (!csvConfigFileInput) return;
+    csvConfigFileInput.value = '';
+    csvConfigFileInput.click();
+}
+
+// Parse selected config file and apply CSV table configuration.
+function onCsvConfigFileSelected(event) {
+    var file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (loadEvent) {
+        try {
+            var content = loadEvent.target.result;
+            var parsed = JSON.parse(content);
+            var importedColumns = Array.isArray(parsed) ? parsed : parsed.csvColumns;
+
+            if (!Array.isArray(importedColumns)) {
+                throw new Error('Missing csvColumns array');
+            }
+
+            settings.csvColumns = normalizeCsvColumnsConfig(importedColumns);
+            renderCsvColumnsUI();
+            saveSettings();
+
+            log('CSV configuration imported from: ' + file.name);
+            alert(t('csvConfigImportSuccess') || 'CSV configuration imported successfully.');
+        } catch (e) {
+            console.error('Error importing CSV configuration:', e);
+            log('CSV config import failed: ' + e.message, 'error');
+            alert((t('csvConfigImportError') || 'Failed to import CSV configuration: ') + e.message);
+        }
+    };
+
+    reader.onerror = function () {
+        log('CSV config import failed: file read error', 'error');
+        alert(t('csvConfigImportReadError') || 'Unable to read selected configuration file.');
+    };
+
+    reader.readAsText(file);
 }
 
 function getColumnValue(session, colConfig, openDate, closeDate) {

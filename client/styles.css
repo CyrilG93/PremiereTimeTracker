@@ -464,6 +464,35 @@ body {
     display: block;
 }
 
+.csv-config-actions {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid #333;
+    background: #202020;
+}
+
+.csv-config-btn {
+    flex: 1;
+    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+    border: 1px solid #444;
+    color: #ddd;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 9px;
+    padding: 4px 6px;
+    transition: all 0.15s ease;
+}
+
+.csv-config-btn:hover {
+    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+    border-color: #555;
+}
+
+.csv-config-file-input {
+    display: none;
+}
+
 .csv-column-row {
     display: flex;
     align-items: center;

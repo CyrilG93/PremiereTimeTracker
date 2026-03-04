@@ -7,12 +7,19 @@
     "noProjectOpen": "Aucun projet ouvert",
     "confirmClear": "Êtes-vous sûr de vouloir supprimer toutes les données de suivi ?",
     "idleWarning": "Projet non suivi !",
+    "csvConfigExportSuccess": "Configuration CSV exportée avec succès !",
+    "csvConfigExportError": "Échec de l'export de la configuration CSV : ",
+    "csvConfigImportSuccess": "Configuration CSV importée avec succès !",
+    "csvConfigImportError": "Échec de l'import de la configuration CSV : ",
+    "csvConfigImportReadError": "Impossible de lire le fichier de configuration sélectionné.",
     "settings": {
         "title": "Paramètres",
         "merge": "Fusionner même jour",
         "autoPause": "Auto-pause",
         "idleTimeout": "Délai (min)",
         "language": "Langue",
-        "clearData": "Effacer Données"
+        "clearData": "Effacer Données",
+        "importCsvConfig": "Importer Config",
+        "exportCsvConfig": "Exporter Config"
     }
 }

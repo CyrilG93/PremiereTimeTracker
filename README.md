@@ -14,6 +14,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - 💾 **Persistent storage** - Data saved in `Application Support` (Mac) or `AppData` (Win)
 - 🔄 **Auto-save** - Saves every 30 seconds during tracking
 - 🐛 **Debug logs** - Built-in log panel to diagnose issues
+- 💼 **CSV config import/export** - Save and reuse CSV column mapping on another computer
 
 ## 📦 Installation
 
@@ -74,6 +75,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - **Timeout**: Delay before auto-pause (default: 30 min)
 - **Language**: English or French
 - **CSV Columns**: Customize the content of the 14 export columns
+- **CSV Config Import/Export**: Save the current column setup to JSON and import it on another machine
 - **Debug Logs**: Displays the log panel to diagnose issues
 
 ## 📁 Data storage
@@ -131,6 +133,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - 💾 **Stockage persistant** - Données sauvegardées dans `Application Support` (Mac) ou `AppData` (Win)
 - 🔄 **Auto-sauvegarde** - Sauvegarde toutes les 30 secondes pendant le tracking
 - 🐛 **Debug logs** - Panneau de logs intégré pour diagnostiquer les problèmes
+- 💼 **Import/Export config CSV** - Sauvegarde et réutilisation du mapping des colonnes sur un autre ordinateur
 
 ## 📦 Installation
 
@@ -191,6 +194,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - **Timeout** : Délai avant auto-pause (défaut: 30 min)
 - **Langue** : Anglais ou Français
 - **Colonnes CSV** : Personnalisez le contenu des 14 colonnes d'export
+- **Import/Export config CSV** : Sauvegardez la configuration actuelle en JSON et importez-la sur une autre machine
 - **Debug Logs** : Affiche le panneau de logs pour diagnostiquer les problèmes
 
 ## 📁 Stockage des données

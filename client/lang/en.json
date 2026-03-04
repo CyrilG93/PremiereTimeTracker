@@ -7,12 +7,19 @@
     "noProjectOpen": "No project open",
     "confirmClear": "Are you sure you want to delete all tracking data?",
     "idleWarning": "Project not tracked!",
+    "csvConfigExportSuccess": "CSV configuration exported successfully!",
+    "csvConfigExportError": "Failed to export CSV configuration: ",
+    "csvConfigImportSuccess": "CSV configuration imported successfully!",
+    "csvConfigImportError": "Failed to import CSV configuration: ",
+    "csvConfigImportReadError": "Unable to read selected configuration file.",
     "settings": {
         "title": "Settings",
         "merge": "Merge same day",
         "autoPause": "Auto-pause",
         "idleTimeout": "Timeout (min)",
         "language": "Language",
-        "clearData": "Clear All Data"
+        "clearData": "Clear All Data",
+        "importCsvConfig": "Import Config",
+        "exportCsvConfig": "Export Config"
     }
 }
