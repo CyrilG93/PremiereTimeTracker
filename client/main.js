@@ -1193,11 +1193,11 @@ function generateCSV(sessions) {
 }
 
 /**
- * Format date as M/D/YYYY
+ * Format date as MM/DD/YYYY
  */
 function formatDateShort(date) {
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
+    var month = pad(date.getMonth() + 1);
+    var day = pad(date.getDate());
     var year = date.getFullYear();
     return month + '/' + day + '/' + year;
 }
@@ -1598,7 +1598,7 @@ function clearLogs() {
  */
 var CSV_COLUMN_TYPES = [
     { value: 'empty', labelKey: 'csvColumnTypes.empty', fallbackLabel: 'Empty' },
-    { value: 'dateShort', labelKey: 'csvColumnTypes.dateShort', fallbackLabel: 'Date (M/D/YYYY)' },
+    { value: 'dateShort', labelKey: 'csvColumnTypes.dateShort', fallbackLabel: 'Date (MM/DD/YYYY)' },
     { value: 'dateDayFirst', labelKey: 'csvColumnTypes.dateDayFirst', fallbackLabel: 'Date (DD/MM/YYYY)' },
     { value: 'timeOpen', labelKey: 'csvColumnTypes.timeOpen', fallbackLabel: 'Time Open' },
     { value: 'timeClose', labelKey: 'csvColumnTypes.timeClose', fallbackLabel: 'Time Close' },

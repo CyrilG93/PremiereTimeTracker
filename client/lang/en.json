@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "Empty",
-        "dateShort": "Date (M/D/YYYY)",
+        "dateShort": "Date (MM/DD/YYYY)",
         "timeOpen": "Time Open",
         "timeClose": "Time Close",
         "duration": "Duration (H:MM)",

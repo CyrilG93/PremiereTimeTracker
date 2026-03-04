@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "Vacio",
-        "dateShort": "Fecha (M/D/AAAA)",
+        "dateShort": "Fecha (MM/DD/YYYY)",
         "timeOpen": "Hora inicio",
         "timeClose": "Hora cierre",
         "duration": "Duracion (H:MM)",
@@ -46,6 +46,6 @@
         "projectPath": "Ruta del proyecto",
         "fixedText": "Texto fijo",
         "fixedTextPlaceholder": "Texto...",
-        "dateDayFirst": "Fecha (DD/MM/AAAA)"
+        "dateDayFirst": "Fecha (DD/MM/YYYY)"
     }
 }

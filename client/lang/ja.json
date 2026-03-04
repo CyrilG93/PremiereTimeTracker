@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "空",
-        "dateShort": "日付 (M/D/YYYY)",
+        "dateShort": "日付 (MM/DD/YYYY)",
         "timeOpen": "開始時刻",
         "timeClose": "終了時刻",
         "duration": "時間 (H:MM)",

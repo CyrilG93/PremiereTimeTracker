@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "空",
-        "dateShort": "日期 (M/D/YYYY)",
+        "dateShort": "日期 (MM/DD/YYYY)",
         "timeOpen": "开始时间",
         "timeClose": "结束时间",
         "duration": "时长 (H:MM)",

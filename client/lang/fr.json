@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "Vide",
-        "dateShort": "Date (M/J/AAAA)",
+        "dateShort": "Date (MM/DD/YYYY)",
         "timeOpen": "Heure ouverture",
         "timeClose": "Heure fermeture",
         "duration": "Duree (H:MM)",
@@ -46,6 +46,6 @@
         "projectPath": "Chemin du projet",
         "fixedText": "Texte fixe",
         "fixedTextPlaceholder": "Texte...",
-        "dateDayFirst": "Date (JJ/MM/AAAA)"
+        "dateDayFirst": "Date (DD/MM/YYYY)"
     }
 }

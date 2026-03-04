@@ -36,7 +36,7 @@
     },
     "csvColumnTypes": {
         "empty": "Пусто",
-        "dateShort": "Дата (M/D/YYYY)",
+        "dateShort": "Дата (MM/DD/YYYY)",
         "timeOpen": "Время открытия",
         "timeClose": "Время закрытия",
         "duration": "Длительность (H:MM)",
