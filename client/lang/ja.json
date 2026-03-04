@@ -46,6 +46,6 @@
         "projectPath": "プロジェクトパス",
         "fixedText": "固定テキスト",
         "fixedTextPlaceholder": "テキスト...",
-        "dateUsCompact": "日付 (MMDDYYYY)"
+        "dateDayFirst": "日付 (DD/MM/YYYY)"
     }
 }

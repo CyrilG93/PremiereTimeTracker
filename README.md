@@ -62,7 +62,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 ### Column Options
 - Empty
 - Date (M/D/YYYY)
-- Date (MMDDYYYY)
+- Date (DD/MM/YYYY)
 - Open Time
 - Close Time
 - Duration
@@ -186,7 +186,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 ### Options de colonnes
 - Vide
 - Date (M/D/YYYY)
-- Date (MMDDYYYY)
+- Date (DD/MM/YYYY)
 - Heure ouverture
 - Heure fermeture
 - Durée

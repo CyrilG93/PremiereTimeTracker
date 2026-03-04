@@ -1599,7 +1599,7 @@ function clearLogs() {
 var CSV_COLUMN_TYPES = [
     { value: 'empty', labelKey: 'csvColumnTypes.empty', fallbackLabel: 'Empty' },
     { value: 'dateShort', labelKey: 'csvColumnTypes.dateShort', fallbackLabel: 'Date (M/D/YYYY)' },
-    { value: 'dateUsCompact', labelKey: 'csvColumnTypes.dateUsCompact', fallbackLabel: 'Date (MMDDYYYY)' },
+    { value: 'dateDayFirst', labelKey: 'csvColumnTypes.dateDayFirst', fallbackLabel: 'Date (DD/MM/YYYY)' },
     { value: 'timeOpen', labelKey: 'csvColumnTypes.timeOpen', fallbackLabel: 'Time Open' },
     { value: 'timeClose', labelKey: 'csvColumnTypes.timeClose', fallbackLabel: 'Time Close' },
     { value: 'duration', labelKey: 'csvColumnTypes.duration', fallbackLabel: 'Duration (H:MM)' },
@@ -1651,8 +1651,9 @@ function renderCsvColumnsUI() {
 
     for (var i = 0; i < CSV_COLUMN_COUNT; i++) {
         var col = settings.csvColumns[i] || { type: 'empty', value: '' };
+        var rowClass = col.type === 'fixedText' ? ' fixed-text-row' : '';
 
-        html += '<div class="csv-column-row">';
+        html += '<div class="csv-column-row' + rowClass + '">';
         html += '<span class="csv-column-letter">' + letters[i] + '</span>';
         html += '<div class="csv-column-type-wrapper">';
         html += '<button type="button" class="csv-column-type-btn" data-col="' + i + '">' + escapeHtml(getCsvTypeLabel(col.type)) + '</button>';
@@ -1796,6 +1797,10 @@ function normalizeCsvColumnsConfig(columns) {
     for (var i = 0; i < CSV_COLUMN_COUNT; i++) {
         var rawCol = Array.isArray(columns) && columns[i] ? columns[i] : {};
         var type = typeof rawCol.type === 'string' ? rawCol.type : 'empty';
+        // Migrate legacy MMDDYYYY preset/config value to the new DD/MM/YYYY type.
+        if (type === 'dateUsCompact') {
+            type = 'dateDayFirst';
+        }
 
         if (allowedTypes.indexOf(type) === -1) {
             type = 'empty';
@@ -1983,8 +1988,8 @@ function getColumnValue(session, colConfig, openDate, closeDate) {
             return '';
         case 'dateShort':
             return formatDateShort(openDate);
-        case 'dateUsCompact':
-            return formatDateUsCompact(openDate);
+        case 'dateDayFirst':
+            return formatDateDayFirst(openDate);
         case 'timeOpen':
             return formatTime12h(openDate);
         case 'timeClose':
@@ -2006,12 +2011,12 @@ function getColumnValue(session, colConfig, openDate, closeDate) {
     }
 }
 
-// Format date as MMDDYYYY (US compact format).
-function formatDateUsCompact(date) {
-    var month = pad(date.getMonth() + 1);
+// Format date as DD/MM/YYYY.
+function formatDateDayFirst(date) {
     var day = pad(date.getDate());
+    var month = pad(date.getMonth() + 1);
     var year = date.getFullYear();
-    return month + day + year;
+    return day + '/' + month + '/' + year;
 }
 
 // Initialize when DOM is ready

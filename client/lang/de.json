@@ -46,6 +46,6 @@
         "projectPath": "Projektpfad",
         "fixedText": "Fester Text",
         "fixedTextPlaceholder": "Text...",
-        "dateUsCompact": "Datum (MMTTJJJJ)"
+        "dateDayFirst": "Datum (TT/MM/JJJJ)"
     }
 }

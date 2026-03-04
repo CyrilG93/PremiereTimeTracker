@@ -46,6 +46,6 @@
         "projectPath": "Chemin du projet",
         "fixedText": "Texte fixe",
         "fixedTextPlaceholder": "Texte...",
-        "dateUsCompact": "Date (MMJJAAAA)"
+        "dateDayFirst": "Date (JJ/MM/AAAA)"
     }
 }

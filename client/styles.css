@@ -646,3 +646,14 @@ body {
 .csv-column-value.show {
     display: block;
 }
+
+/* Give more room to fixed text value when this type is selected. */
+.csv-column-row.fixed-text-row .csv-column-type-wrapper {
+    flex: 0 0 40%;
+}
+
+.csv-column-row.fixed-text-row .csv-column-value.show {
+    flex: 1;
+    width: auto;
+    min-width: 120px;
+}

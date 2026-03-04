@@ -46,6 +46,6 @@
         "projectPath": "Путь проекта",
         "fixedText": "Фиксированный текст",
         "fixedTextPlaceholder": "Текст...",
-        "dateUsCompact": "Дата (MMDDYYYY)"
+        "dateDayFirst": "Дата (DD/MM/YYYY)"
     }
 }
