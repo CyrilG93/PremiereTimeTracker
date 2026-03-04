@@ -91,6 +91,11 @@
                             <button id="importCsvConfigBtn" class="csv-config-btn" data-i18n="settings.importCsvConfig">Import Config</button>
                             <button id="exportCsvConfigBtn" class="csv-config-btn" data-i18n="settings.exportCsvConfig">Export Config</button>
                         </div>
+                        <div class="csv-preset-row">
+                            <input type="text" id="csvPresetNameInput" class="csv-preset-input" data-i18n-placeholder="settings.csvPresetPlaceholder" placeholder="Preset name">
+                            <button id="saveCsvPresetBtn" class="csv-config-btn csv-preset-save-btn" data-i18n="settings.saveCsvPreset">Save Preset</button>
+                        </div>
+                        <select id="csvPresetSelect" class="csv-preset-select"></select>
                         <input type="file" id="csvConfigFileInput" accept=".json" class="csv-config-file-input">
                         <div id="csvColumnsContainer"></div>
                     </div>

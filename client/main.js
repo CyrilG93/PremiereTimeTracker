@@ -18,6 +18,7 @@ var mergeEntriesCheckbox, idleTimeoutInput, languageSelect, clearDataBtn, clearA
 var idleAlert, dismissIdleBtn, mainDisplay, autoPauseCheckbox;
 var logPanel, logContent, showLogsCheckbox, clearLogsBtn;
 var importCsvConfigBtn, exportCsvConfigBtn, csvConfigFileInput;
+var csvPresetNameInput, saveCsvPresetBtn, csvPresetSelect;
 
 // State
 var currentSession = null;
@@ -43,7 +44,8 @@ var settings = {
         { type: 'empty', value: '' },
         { type: 'empty', value: '' },
         { type: 'empty', value: '' }
-    ]
+    ],
+    csvColumnPresets: {}
 };
 var translations = {};
 var currentLang = 'en';
@@ -145,6 +147,9 @@ function init() {
     importCsvConfigBtn = document.getElementById('importCsvConfigBtn');
     exportCsvConfigBtn = document.getElementById('exportCsvConfigBtn');
     csvConfigFileInput = document.getElementById('csvConfigFileInput');
+    csvPresetNameInput = document.getElementById('csvPresetNameInput');
+    saveCsvPresetBtn = document.getElementById('saveCsvPresetBtn');
+    csvPresetSelect = document.getElementById('csvPresetSelect');
 
     // Load saved data
     loadData();
@@ -200,7 +205,14 @@ function init() {
     if (csvConfigFileInput) {
         csvConfigFileInput.addEventListener('change', onCsvConfigFileSelected);
     }
+    if (saveCsvPresetBtn) {
+        saveCsvPresetBtn.addEventListener('click', saveCsvPreset);
+    }
+    if (csvPresetSelect) {
+        csvPresetSelect.addEventListener('change', onCsvPresetSelectChange);
+    }
     renderCsvColumnsUI();
+    renderCsvPresetOptions();
 
     // Start polling for project changes
     startTracking();
@@ -418,6 +430,8 @@ function loadData() {
             settings = Object.assign(settings, parsed.settings || {});
             // Keep the CSV config shape stable to avoid invalid entries in UI/export.
             settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
+            // Keep preset list valid and resilient to malformed entries.
+            settings.csvColumnPresets = normalizeCsvPresets(settings.csvColumnPresets);
             log('Data loaded from file: ' + sessions.length + ' sessions');
         } else {
             // Try to migrate from localStorage
@@ -428,6 +442,8 @@ function loadData() {
                 settings = Object.assign(settings, parsed.settings || {});
                 // Keep the CSV config shape stable to avoid invalid entries in UI/export.
                 settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
+                // Keep preset list valid and resilient to malformed entries.
+                settings.csvColumnPresets = normalizeCsvPresets(settings.csvColumnPresets);
                 log('Migrated ' + sessions.length + ' sessions from localStorage');
                 // Save to file and clear localStorage
                 saveData();
@@ -1228,6 +1244,16 @@ function applyTranslations() {
         var key = elements[i].getAttribute('data-i18n');
         elements[i].textContent = t(key);
     }
+
+    // Apply translated placeholders for input fields.
+    var placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+    for (var j = 0; j < placeholders.length; j++) {
+        var placeholderKey = placeholders[j].getAttribute('data-i18n-placeholder');
+        placeholders[j].setAttribute('placeholder', t(placeholderKey));
+    }
+
+    // Re-render preset labels after language switch.
+    renderCsvPresetOptions(csvPresetSelect ? csvPresetSelect.value : '');
     document.documentElement.lang = currentLang;
 }
 
@@ -1566,6 +1592,101 @@ function normalizeCsvColumnsConfig(columns) {
     }
 
     return normalized;
+}
+
+// Normalize preset collection and keep only valid named presets.
+function normalizeCsvPresets(presets) {
+    var normalizedPresets = {};
+    if (!presets || typeof presets !== 'object') {
+        return normalizedPresets;
+    }
+
+    Object.keys(presets).forEach(function (presetName) {
+        var trimmedName = (presetName || '').trim();
+        if (!trimmedName) {
+            return;
+        }
+
+        // Each preset stores a normalized clone of the CSV column configuration.
+        normalizedPresets[trimmedName] = normalizeCsvColumnsConfig(presets[presetName]);
+    });
+
+    return normalizedPresets;
+}
+
+// Build preset dropdown options sorted alphabetically.
+function renderCsvPresetOptions(selectedName) {
+    if (!csvPresetSelect) {
+        return;
+    }
+
+    var presetNames = Object.keys(settings.csvColumnPresets || {}).sort(function (a, b) {
+        return a.localeCompare(b, undefined, { sensitivity: 'base' });
+    });
+    var html = '<option value="">' + (t('settings.selectCsvPreset') || 'Load preset...') + '</option>';
+
+    presetNames.forEach(function (presetName) {
+        var selected = presetName === selectedName ? ' selected' : '';
+        html += '<option value="' + escapeHtml(presetName) + '"' + selected + '>' + escapeHtml(presetName) + '</option>';
+    });
+
+    csvPresetSelect.innerHTML = html;
+}
+
+// Save current CSV mapping under a user-provided preset name.
+function saveCsvPreset() {
+    if (!csvPresetNameInput) {
+        return;
+    }
+
+    var presetName = (csvPresetNameInput.value || '').trim();
+    if (!presetName) {
+        alert(t('csvPresetNameRequired') || 'Please enter a preset name.');
+        return;
+    }
+
+    // Ask confirmation when overwriting an existing preset with the same name.
+    if (settings.csvColumnPresets[presetName]) {
+        var overwriteMessage = (t('csvPresetOverwriteConfirm') || 'A preset with this name already exists. Overwrite it?') + '\n\n' + presetName;
+        if (!confirm(overwriteMessage)) {
+            return;
+        }
+    }
+
+    settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumns);
+    settings.csvColumnPresets[presetName] = settings.csvColumns.map(function (col) {
+        return { type: col.type, value: col.value };
+    });
+    settings.csvColumnPresets = normalizeCsvPresets(settings.csvColumnPresets);
+
+    saveSettings();
+    renderCsvPresetOptions(presetName);
+    csvPresetNameInput.value = '';
+    log('CSV preset saved: ' + presetName);
+    alert((t('csvPresetSaveSuccess') || 'CSV preset saved: ') + presetName);
+}
+
+// Apply selected preset to current CSV table configuration.
+function onCsvPresetSelectChange(e) {
+    var presetName = e.target.value;
+    if (!presetName || !settings.csvColumnPresets[presetName]) {
+        return;
+    }
+
+    settings.csvColumns = normalizeCsvColumnsConfig(settings.csvColumnPresets[presetName]);
+    renderCsvColumnsUI();
+    saveSettings();
+    log('CSV preset applied: ' + presetName);
+}
+
+// Escape user-provided text before injecting into HTML option labels.
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 // Export current CSV table configuration as a JSON file.

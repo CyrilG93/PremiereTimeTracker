@@ -12,6 +12,9 @@
     "csvConfigImportSuccess": "Configuration CSV importée avec succès !",
     "csvConfigImportError": "Échec de l'import de la configuration CSV : ",
     "csvConfigImportReadError": "Impossible de lire le fichier de configuration sélectionné.",
+    "csvPresetNameRequired": "Merci d'entrer un nom de preset.",
+    "csvPresetOverwriteConfirm": "Un preset avec ce nom existe déjà. L'écraser ?",
+    "csvPresetSaveSuccess": "Preset CSV sauvegardé : ",
     "settings": {
         "title": "Paramètres",
         "merge": "Fusionner même jour",
@@ -20,6 +23,9 @@
         "language": "Langue",
         "clearData": "Effacer Données",
         "importCsvConfig": "Importer Config",
-        "exportCsvConfig": "Exporter Config"
+        "exportCsvConfig": "Exporter Config",
+        "saveCsvPreset": "Sauver Preset",
+        "selectCsvPreset": "Charger un preset...",
+        "csvPresetPlaceholder": "Nom du preset"
     }
 }
