@@ -117,125 +117,26 @@ CyrilG93
 MIT License
 
 ---
+## 📜 Changelog
 
-# 🇫🇷 Version Française
+### 1.3.0
+- Added CSV configuration import/export (JSON) to reuse setups across machines.
+- Added named CSV presets with alphabetical preset selector.
+- Added multilingual UI support: Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文.
+- Localized CSV column type labels and Debug Logs labels.
+- Improved CSV type dropdown behavior in constrained panel space.
+- Improved settings readability with larger typography.
+- Improved auto-pause behavior to prevent repeated notifications.
+- Added/normalized additional CSV date formats (`MM/DD/YYYY` and `DD/MM/YYYY`).
 
----
+### 1.2.0
+- Added and stabilized in-app GitHub update checking system.
 
-# Premiere Time Tracker
+### 1.1.3
+- Fixed auto-pause alert loop issue.
 
-Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temps passé sur chaque projet.
+### 1.1.2
+- Added persistent data storage across Premiere versions.
 
-## ✨ Fonctionnalités
-
-- ⏱️ **Tracking automatique** - Détecte l'ouverture/fermeture des projets
-- 📊 **Export CSV** - Exporte les données avec 14 colonnes formatées
-- 🔄 **Multi-sessions** - Chaque ouverture crée une nouvelle entrée
-- 📁 **Nom du projet** - Extrait automatiquement le nom du dossier projet
-- 🔀 **Fusion optionnelle** - Fusionne les sessions du même jour
-- ⏸️ **Auto-pause** - Pause automatique après X minutes d'inactivité
-- 🌐 **Multilingue** - Interface disponible en Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
-- 💾 **Stockage persistant** - Données sauvegardées dans `Application Support` (Mac) ou `AppData` (Win)
-- 🔄 **Auto-sauvegarde** - Sauvegarde toutes les 30 secondes pendant le tracking
-- 🐛 **Debug logs** - Panneau de logs intégré pour diagnostiquer les problèmes
-- 💼 **Import/Export config CSV** - Sauvegarde et réutilisation du mapping des colonnes sur un autre ordinateur
-- 🧩 **Presets CSV** - Sauvegarde de configurations nommées avec chargement via liste triée alphabétiquement
-
-## 📦 Installation
-
-### macOS
-
-1. Ouvrez le Terminal.
-2. **Méthode la plus simple (recommandée)** : glissez-déposez `install_mac.sh` dans la fenêtre du Terminal, puis appuyez sur Entrée.
-3. **Méthode manuelle (ligne de commande)** : lancez :
-   ```bash
-   cd /chemin/vers/PremiereTimeTracker
-   chmod +x install_mac.sh
-   ./install_mac.sh
-   ```
-
-4. Redémarrez Adobe Premiere Pro
-
-5. Ouvrez : **Fenêtre > Extensions > Time Tracker**
-
-### Windows
-
-1. Double-cliquez sur `install_windows.bat`
-
-2. Redémarrez Adobe Premiere Pro
-
-3. Ouvrez : **Window > Extensions > Time Tracker**
-
-## 🚀 Utilisation
-
-### Tracking
-1. Ouvrez l'extension dans Premiere Pro
-2. Le tracking démarre automatiquement quand un projet est ouvert
-3. Le temps s'affiche en vert quand le tracking est actif
-4. Les données sont sauvegardées automatiquement toutes les 30 secondes
-
-### Export CSV
-1. Cliquez sur le bouton **Export**
-2. Un fichier CSV est sauvegardé sur le Bureau
-
-### Format d'export
-| Colonne | Contenu |
-|---------|---------|
-| A-N | **Personnalisable** - Configurez chacune des 14 colonnes dans les Paramètres |
-
-### Options de colonnes
-- Vide
-- Date (MM/DD/YYYY)
-- Date (DD/MM/YYYY)
-- Heure ouverture
-- Heure fermeture
-- Durée
-- Plateforme
-- Nom du projet
-- Chemin du projet
-- Texte fixe (Valeur personnalisée)
-
-### Paramètres
-- **Fusionner même jour** : Regroupe les sessions d'un même projet le même jour
-- **Auto-pause** : Pause le tracking après X minutes d'inactivité
-- **Notification auto-pause** : Une seule alerte est affichée ; un clic sur fermer relance le tracking jusqu'au prochain délai
-- **Timeout** : Délai avant auto-pause (défaut: 30 min)
-- **Langue** : Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
-- **Colonnes CSV** : Personnalisez le contenu des 14 colonnes d'export
-- **Libellés localisés** : Les options du type de colonne CSV et les labels Debug Logs suivent la langue sélectionnée
-- **Import/Export config CSV** : Sauvegardez la configuration actuelle en JSON et importez-la sur une autre machine
-- **Presets CSV** : Sauvegardez la config actuelle avec un nom personnalisé et chargez les presets en ordre alphabétique
-- **Debug Logs** : Affiche le panneau de logs pour diagnostiquer les problèmes
-
-## 📁 Stockage des données
-
-Les données sont stockées dans un fichier JSON persistant :
-**macOS :** `~/Library/Application Support/PremiereTimeTracker/timeTracker_data.json`
-**Windows :** `%APPDATA%\PremiereTimeTracker\timeTracker_data.json`
-
-Ce fichier contient toutes les sessions et paramètres, et n'est pas effacé lors des mises à jour de Premiere Pro.
-
-## 🔧 Désinstallation
-
-### macOS
-```bash
-rm -rf "$HOME/Library/Application Support/Adobe/CEP/extensions/PremiereTimeTracker"
-```
-
-### Windows
-```cmd
-rmdir /s /q "%APPDATA%\Adobe\CEP\extensions\PremiereTimeTracker"
-```
-
-## 📝 Compatibilité
-
-- Adobe Premiere Pro 2025 (25.5+)
-- macOS & Windows
-
-## 👤 Auteur
-
-CyrilG93
-
-## 📄 Licence
-
-MIT License
+### 1.1.1
+- Release packaging and installer updates.
