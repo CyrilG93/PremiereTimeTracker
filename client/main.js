@@ -90,13 +90,34 @@ function loadTranslations(lang, callback) {
     var path = require('path');
     var langPath = path.join(csInterface.getSystemPath(SystemPath.EXTENSION), 'client', 'lang', lang + '.json');
 
-    // Default messages for update
+    // Default messages for update banner in all supported UI languages.
     const updateMessages = {
+        de: {
+            updateAvailable: "🚀 Neue Version verfügbar! Klicken Sie zum Aktualisieren.",
+        },
         en: {
             updateAvailable: "🚀 New version available! Click to update.",
         },
+        es: {
+            updateAvailable: "🚀 ¡Nueva versión disponible! Haz clic para actualizar.",
+        },
         fr: {
             updateAvailable: "🚀 Nouvelle version disponible ! Cliquez pour mettre à jour.",
+        },
+        it: {
+            updateAvailable: "🚀 Nuova versione disponibile! Clicca per aggiornare.",
+        },
+        ja: {
+            updateAvailable: "🚀 新しいバージョンがあります。クリックして更新してください。",
+        },
+        'pt-BR': {
+            updateAvailable: "🚀 Nova versão disponível! Clique para atualizar.",
+        },
+        ru: {
+            updateAvailable: "🚀 Доступна новая версия! Нажмите, чтобы обновить.",
+        },
+        'zh-CN': {
+            updateAvailable: "🚀 有新版本可用！点击即可更新。",
         }
     };
 

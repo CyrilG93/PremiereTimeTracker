@@ -10,7 +10,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - 📁 **Project name** - Automatically extracts the project folder name
 - 🔀 **Optional merge** - Merges sessions from the same day
 - ⏸️ **Auto-pause** - Automatic pause after X minutes of inactivity
-- 🌐 **Bilingual** - Interface in French and English
+- 🌐 **Multilingual** - Interface available in Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - 💾 **Persistent storage** - Data saved in `Application Support` (Mac) or `AppData` (Win)
 - 🔄 **Auto-save** - Saves every 30 seconds during tracking
 - 🐛 **Debug logs** - Built-in log panel to diagnose issues
@@ -75,7 +75,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - **Auto-pause**: Pauses tracking after X minutes of inactivity
 - **Auto-pause notice**: Only one warning is shown; click dismiss once to resume tracking until the next timeout
 - **Timeout**: Delay before auto-pause (default: 30 min)
-- **Language**: English or French
+- **Language**: Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - **CSV Columns**: Customize the content of the 14 export columns
 - **CSV Config Import/Export**: Save the current column setup to JSON and import it on another machine
 - **CSV Presets**: Save the current setup with a custom name and load presets sorted alphabetically
@@ -132,7 +132,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - 📁 **Nom du projet** - Extrait automatiquement le nom du dossier projet
 - 🔀 **Fusion optionnelle** - Fusionne les sessions du même jour
 - ⏸️ **Auto-pause** - Pause automatique après X minutes d'inactivité
-- 🌐 **Bilingue** - Interface en français et anglais
+- 🌐 **Multilingue** - Interface disponible en Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - 💾 **Stockage persistant** - Données sauvegardées dans `Application Support` (Mac) ou `AppData` (Win)
 - 🔄 **Auto-sauvegarde** - Sauvegarde toutes les 30 secondes pendant le tracking
 - 🐛 **Debug logs** - Panneau de logs intégré pour diagnostiquer les problèmes
@@ -197,7 +197,7 @@ Extension CEP pour Adobe Premiere Pro 2025 (25.5+) permettant de tracker le temp
 - **Auto-pause** : Pause le tracking après X minutes d'inactivité
 - **Notification auto-pause** : Une seule alerte est affichée ; un clic sur fermer relance le tracking jusqu'au prochain délai
 - **Timeout** : Délai avant auto-pause (défaut: 30 min)
-- **Langue** : Anglais ou Français
+- **Langue** : Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - **Colonnes CSV** : Personnalisez le contenu des 14 colonnes d'export
 - **Import/Export config CSV** : Sauvegardez la configuration actuelle en JSON et importez-la sur une autre machine
 - **Presets CSV** : Sauvegardez la config actuelle avec un nom personnalisé et chargez les presets en ordre alphabétique

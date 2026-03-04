@@ -1,0 +1,31 @@
+{
+    "appTitle": "Zeit-Tracker",
+    "exportBtn": "Exportieren",
+    "noDataToExport": "Keine Daten zum Exportieren",
+    "exportSuccess": "Export erfolgreich!",
+    "exportError": "Export fehlgeschlagen: ",
+    "noProjectOpen": "Kein Projekt geöffnet",
+    "confirmClear": "Möchtest du wirklich alle Tracking-Daten löschen?",
+    "idleWarning": "Projekt wird nicht verfolgt!",
+    "csvConfigExportSuccess": "CSV-Konfiguration erfolgreich exportiert!",
+    "csvConfigExportError": "CSV-Konfiguration konnte nicht exportiert werden: ",
+    "csvConfigImportSuccess": "CSV-Konfiguration erfolgreich importiert!",
+    "csvConfigImportError": "CSV-Konfiguration konnte nicht importiert werden: ",
+    "csvConfigImportReadError": "Ausgewählte Konfigurationsdatei konnte nicht gelesen werden.",
+    "csvPresetNameRequired": "Bitte einen Preset-Namen eingeben.",
+    "csvPresetOverwriteConfirm": "Ein Preset mit diesem Namen existiert bereits. Überschreiben?",
+    "csvPresetSaveSuccess": "CSV-Preset gespeichert: ",
+    "settings": {
+        "title": "Einstellungen",
+        "merge": "Gleichen Tag zusammenführen",
+        "autoPause": "Auto-Pause",
+        "idleTimeout": "Timeout (Min)",
+        "language": "Sprache",
+        "clearData": "Alle Daten löschen",
+        "importCsvConfig": "Konfig importieren",
+        "exportCsvConfig": "Konfig exportieren",
+        "saveCsvPreset": "Preset speichern",
+        "selectCsvPreset": "Preset laden...",
+        "csvPresetPlaceholder": "Preset-Name"
+    }
+}

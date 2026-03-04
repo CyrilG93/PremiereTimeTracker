@@ -1,0 +1,31 @@
+{
+    "appTitle": "Tracciatore Tempo",
+    "exportBtn": "Esporta",
+    "noDataToExport": "Nessun dato da esportare",
+    "exportSuccess": "Esportazione riuscita!",
+    "exportError": "Esportazione non riuscita: ",
+    "noProjectOpen": "Nessun progetto aperto",
+    "confirmClear": "Sei sicuro di voler eliminare tutti i dati di tracciamento?",
+    "idleWarning": "Progetto non tracciato!",
+    "csvConfigExportSuccess": "Configurazione CSV esportata con successo!",
+    "csvConfigExportError": "Errore durante l'esportazione della configurazione CSV: ",
+    "csvConfigImportSuccess": "Configurazione CSV importata con successo!",
+    "csvConfigImportError": "Errore durante l'importazione della configurazione CSV: ",
+    "csvConfigImportReadError": "Impossibile leggere il file di configurazione selezionato.",
+    "csvPresetNameRequired": "Inserisci un nome per il preset.",
+    "csvPresetOverwriteConfirm": "Esiste già un preset con questo nome. Sovrascriverlo?",
+    "csvPresetSaveSuccess": "Preset CSV salvato: ",
+    "settings": {
+        "title": "Impostazioni",
+        "merge": "Unisci stesso giorno",
+        "autoPause": "Pausa automatica",
+        "idleTimeout": "Timeout (min)",
+        "language": "Lingua",
+        "clearData": "Cancella tutti i dati",
+        "importCsvConfig": "Importa config",
+        "exportCsvConfig": "Esporta config",
+        "saveCsvPreset": "Salva preset",
+        "selectCsvPreset": "Carica preset...",
+        "csvPresetPlaceholder": "Nome preset"
+    }
+}

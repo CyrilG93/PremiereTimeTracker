@@ -1,0 +1,31 @@
+{
+    "appTitle": "Трекер времени",
+    "exportBtn": "Экспорт",
+    "noDataToExport": "Нет данных для экспорта",
+    "exportSuccess": "Экспорт выполнен успешно!",
+    "exportError": "Ошибка экспорта: ",
+    "noProjectOpen": "Нет открытого проекта",
+    "confirmClear": "Вы уверены, что хотите удалить все данные трекинга?",
+    "idleWarning": "Проект не отслеживается!",
+    "csvConfigExportSuccess": "Конфигурация CSV успешно экспортирована!",
+    "csvConfigExportError": "Ошибка экспорта конфигурации CSV: ",
+    "csvConfigImportSuccess": "Конфигурация CSV успешно импортирована!",
+    "csvConfigImportError": "Ошибка импорта конфигурации CSV: ",
+    "csvConfigImportReadError": "Не удалось прочитать выбранный файл конфигурации.",
+    "csvPresetNameRequired": "Введите имя пресета.",
+    "csvPresetOverwriteConfirm": "Пресет с таким именем уже существует. Перезаписать?",
+    "csvPresetSaveSuccess": "CSV-пресет сохранен: ",
+    "settings": {
+        "title": "Настройки",
+        "merge": "Объединять за один день",
+        "autoPause": "Автопауза",
+        "idleTimeout": "Тайм-аут (мин)",
+        "language": "Язык",
+        "clearData": "Очистить все данные",
+        "importCsvConfig": "Импорт конфигурации",
+        "exportCsvConfig": "Экспорт конфигурации",
+        "saveCsvPreset": "Сохранить пресет",
+        "selectCsvPreset": "Загрузить пресет...",
+        "csvPresetPlaceholder": "Имя пресета"
+    }
+}

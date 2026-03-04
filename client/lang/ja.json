@@ -1,0 +1,31 @@
+{
+    "appTitle": "タイムトラッカー",
+    "exportBtn": "エクスポート",
+    "noDataToExport": "エクスポートするデータがありません",
+    "exportSuccess": "エクスポートに成功しました！",
+    "exportError": "エクスポートに失敗しました: ",
+    "noProjectOpen": "開いているプロジェクトがありません",
+    "confirmClear": "すべてのトラッキングデータを削除してもよろしいですか？",
+    "idleWarning": "プロジェクトが計測されていません！",
+    "csvConfigExportSuccess": "CSV設定を正常にエクスポートしました！",
+    "csvConfigExportError": "CSV設定のエクスポートに失敗しました: ",
+    "csvConfigImportSuccess": "CSV設定を正常にインポートしました！",
+    "csvConfigImportError": "CSV設定のインポートに失敗しました: ",
+    "csvConfigImportReadError": "選択した設定ファイルを読み込めません。",
+    "csvPresetNameRequired": "プリセット名を入力してください。",
+    "csvPresetOverwriteConfirm": "同じ名前のプリセットが既にあります。上書きしますか？",
+    "csvPresetSaveSuccess": "CSVプリセットを保存しました: ",
+    "settings": {
+        "title": "設定",
+        "merge": "同日を統合",
+        "autoPause": "自動一時停止",
+        "idleTimeout": "タイムアウト（分）",
+        "language": "言語",
+        "clearData": "すべてのデータを消去",
+        "importCsvConfig": "設定をインポート",
+        "exportCsvConfig": "設定をエクスポート",
+        "saveCsvPreset": "プリセットを保存",
+        "selectCsvPreset": "プリセットを読み込む...",
+        "csvPresetPlaceholder": "プリセット名"
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "appTitle": "Rastreador de Tiempo",
+    "exportBtn": "Exportar",
+    "noDataToExport": "No hay datos para exportar",
+    "exportSuccess": "¡Exportación exitosa!",
+    "exportError": "Error al exportar: ",
+    "noProjectOpen": "No hay ningún proyecto abierto",
+    "confirmClear": "¿Seguro que quieres eliminar todos los datos de seguimiento?",
+    "idleWarning": "¡Proyecto no registrado!",
+    "csvConfigExportSuccess": "¡Configuración CSV exportada correctamente!",
+    "csvConfigExportError": "Error al exportar la configuración CSV: ",
+    "csvConfigImportSuccess": "¡Configuración CSV importada correctamente!",
+    "csvConfigImportError": "Error al importar la configuración CSV: ",
+    "csvConfigImportReadError": "No se puede leer el archivo de configuración seleccionado.",
+    "csvPresetNameRequired": "Introduce un nombre de preset.",
+    "csvPresetOverwriteConfirm": "Ya existe un preset con este nombre. ¿Sobrescribirlo?",
+    "csvPresetSaveSuccess": "Preset CSV guardado: ",
+    "settings": {
+        "title": "Configuración",
+        "merge": "Combinar mismo día",
+        "autoPause": "Pausa automática",
+        "idleTimeout": "Tiempo límite (min)",
+        "language": "Idioma",
+        "clearData": "Borrar todos los datos",
+        "importCsvConfig": "Importar config",
+        "exportCsvConfig": "Exportar config",
+        "saveCsvPreset": "Guardar preset",
+        "selectCsvPreset": "Cargar preset...",
+        "csvPresetPlaceholder": "Nombre del preset"
+    }
+}

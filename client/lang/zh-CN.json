@@ -1,0 +1,31 @@
+{
+    "appTitle": "时间追踪器",
+    "exportBtn": "导出",
+    "noDataToExport": "没有可导出的数据",
+    "exportSuccess": "导出成功！",
+    "exportError": "导出失败：",
+    "noProjectOpen": "没有打开的项目",
+    "confirmClear": "确定要删除所有跟踪数据吗？",
+    "idleWarning": "项目未在跟踪！",
+    "csvConfigExportSuccess": "CSV 配置导出成功！",
+    "csvConfigExportError": "CSV 配置导出失败：",
+    "csvConfigImportSuccess": "CSV 配置导入成功！",
+    "csvConfigImportError": "CSV 配置导入失败：",
+    "csvConfigImportReadError": "无法读取所选配置文件。",
+    "csvPresetNameRequired": "请输入预设名称。",
+    "csvPresetOverwriteConfirm": "已存在同名预设。是否覆盖？",
+    "csvPresetSaveSuccess": "CSV 预设已保存：",
+    "settings": {
+        "title": "设置",
+        "merge": "合并同一天",
+        "autoPause": "自动暂停",
+        "idleTimeout": "超时（分钟）",
+        "language": "语言",
+        "clearData": "清除所有数据",
+        "importCsvConfig": "导入配置",
+        "exportCsvConfig": "导出配置",
+        "saveCsvPreset": "保存预设",
+        "selectCsvPreset": "加载预设...",
+        "csvPresetPlaceholder": "预设名称"
+    }
+}
