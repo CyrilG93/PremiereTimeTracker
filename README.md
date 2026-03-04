@@ -74,7 +74,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 ### Settings
 - **Merge same day**: Groups sessions of the same project on the same day
 - **Auto-pause**: Pauses tracking after X minutes of inactivity
-- **Auto-pause notice**: One modal notification and one panel warning are shown per timeout; click dismiss once to resume tracking until the next timeout
+- **Auto-pause notice**: A modal notification is shown at timeout; clicking OK resumes tracking immediately
 - **Timeout**: Delay before auto-pause (default: 30 min)
 - **Language**: Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文
 - **CSV Columns**: Customize the content of the 14 export columns

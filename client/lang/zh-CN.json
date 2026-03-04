@@ -49,5 +49,5 @@
         "dateDayFirst": "日期 (DD/MM/YYYY)"
     },
     "autoPauseIdleWarning": "因无活动已自动暂停。",
-    "autoPauseNotification": "⏸️ 自动暂停：已 {minutes} 分钟无活动。\n追踪已暂停。\n点击面板中的 × 可恢复。"
+    "autoPauseNotification": "⏸️ 自动暂停：已 {minutes} 分钟无活动。\n追踪已暂停。\n点击“确定”即可立即恢复。"
 }

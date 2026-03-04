@@ -1377,9 +1377,31 @@ function setIdleAlertMessageAutoPause() {
 function getAutoPauseNotificationMessage() {
     var template = t('autoPauseNotification');
     if (template === 'autoPauseNotification') {
-        template = '⏸️ Auto-pause: no activity for {minutes} minutes.\nTracking is paused.\nClick × on the panel warning to resume.';
+        template = '⏸️ Auto-pause: no activity for {minutes} minutes.\nTracking is paused.\nClick OK to resume immediately.';
     }
     return template.replace('{minutes}', settings.idleTimeout);
+}
+
+// Resume tracking flow after user acknowledges the auto-pause notification.
+function acknowledgeAutoPauseAndResume() {
+    if (!autoPauseWaitingForResume) {
+        return;
+    }
+
+    autoPauseWaitingForResume = false;
+    autoPauseDialogShown = false;
+    idleStartTime = null;
+    idleAlertShown = true;
+    idleAlertDismissed = true;
+    lastActivityTime = new Date();
+    lastProjectState = '';
+    resetIdleAlertMessage();
+    if (idleAlert) {
+        idleAlert.classList.remove('show');
+    }
+
+    // Resume project tracking immediately after acknowledgement.
+    checkProject();
 }
 
 /**
@@ -1468,20 +1490,16 @@ function dismissIdleAlert() {
     if (idleAlert) {
         idleAlert.classList.remove('show');
     }
-    // Keep the alert dismissed until a new idle cycle starts.
-    idleAlertShown = true;
-    idleAlertDismissed = true;
 
-    // Resume tracking flow if this alert came from auto-pause.
+    // Auto-pause acknowledgement now resumes directly.
     if (autoPauseWaitingForResume) {
-        autoPauseWaitingForResume = false;
-        autoPauseDialogShown = false;
-        lastActivityTime = new Date();
-        lastProjectState = '';
-        resetIdleAlertMessage();
+        acknowledgeAutoPauseAndResume();
+        return;
     }
 
-    // Try to detect project again
+    // Keep the regular idle alert dismissed until a new idle cycle starts.
+    idleAlertShown = true;
+    idleAlertDismissed = true;
     checkProject();
 }
 
@@ -1536,8 +1554,9 @@ function checkActivity() {
                 if (!autoPauseDialogShown) {
                     autoPauseDialogShown = true;
                     alert(getAutoPauseNotificationMessage());
+                    acknowledgeAutoPauseAndResume();
                 }
-                log('Auto-pause triggered after inactivity. Waiting for manual resume.');
+                log('Auto-pause triggered after inactivity. Resume on notification acknowledgement.');
             }
         }
     });

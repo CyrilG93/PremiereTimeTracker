@@ -49,5 +49,5 @@
         "dateDayFirst": "Fecha (DD/MM/YYYY)"
     },
     "autoPauseIdleWarning": "Pausa automatica por inactividad.",
-    "autoPauseNotification": "⏸️ Pausa automatica: sin actividad durante {minutes} minutos.\nEl seguimiento esta en pausa.\nHaz clic en × en el panel para reanudar."
+    "autoPauseNotification": "⏸️ Pausa automatica: sin actividad durante {minutes} minutos.\nEl seguimiento esta en pausa.\nPulsa OK para reanudar de inmediato."
 }

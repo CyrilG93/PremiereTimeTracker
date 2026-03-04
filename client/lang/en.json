@@ -49,5 +49,5 @@
         "dateDayFirst": "Date (DD/MM/YYYY)"
     },
     "autoPauseIdleWarning": "Auto-paused due to inactivity.",
-    "autoPauseNotification": "⏸️ Auto-pause: no activity for {minutes} minutes.\nTracking is paused.\nClick × on the panel warning to resume."
+    "autoPauseNotification": "⏸️ Auto-pause: no activity for {minutes} minutes.\nTracking is paused.\nClick OK to resume immediately."
 }

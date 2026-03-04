@@ -49,5 +49,5 @@
         "dateDayFirst": "Data (DD/MM/YYYY)"
     },
     "autoPauseIdleWarning": "Pausa automatica per inattivita.",
-    "autoPauseNotification": "⏸️ Pausa automatica: nessuna attivita da {minutes} minuti.\nIl tracciamento e in pausa.\nFai clic su × nel pannello per riprendere."
+    "autoPauseNotification": "⏸️ Pausa automatica: nessuna attivita da {minutes} minuti.\nIl tracciamento e in pausa.\nFai clic su OK per riprendere subito."
 }
