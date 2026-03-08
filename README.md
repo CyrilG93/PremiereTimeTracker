@@ -120,7 +120,7 @@ MIT License
 ## 📜 Changelog
 
 ### 1.3.0
-- Added CSV configuration import/export (JSON) to reuse setups across machines.
+- Added CSV configuration import/export to reuse setups across machines.
 - Added named CSV presets with alphabetical preset selector.
 - Added multilingual UI support: Deutsch, English, Español, Français, Italiano, Português (Brasil), Русский, 日本語, 简体中文.
 - Localized CSV column type labels and Debug Logs labels.
