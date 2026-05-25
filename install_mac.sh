@@ -15,6 +15,7 @@ echo ""
 # Extension details
 EXTENSION_NAME="PremiereTimeTracker"
 EXTENSION_ID="com.cyrilg93.timetracker"
+CSXS_DEBUG_VERSIONS=("11" "12")
 
 # Get the directory where the script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -50,9 +51,17 @@ rm -f "$INSTALL_DIR/install_windows.bat"
 # Set permissions
 chmod -R 755 "$INSTALL_DIR"
 
+enable_cep_debug_mode() {
+    # Enables unsigned CEP extension loading for the Premiere Pro CEP runtimes supported by this installer.
+    for csxs_version in "${CSXS_DEBUG_VERSIONS[@]}"; do
+        echo "  - CSXS $csxs_version"
+        defaults write "com.adobe.CSXS.$csxs_version" PlayerDebugMode 1
+    done
+}
+
 # Enable debug mode for CEP extensions
 echo "Enabling debug mode..."
-defaults write com.adobe.CSXS.11 PlayerDebugMode 1
+enable_cep_debug_mode
 
 echo ""
 echo "✅ Installation complete!"

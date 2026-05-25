@@ -29,6 +29,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
    chmod +x install_mac.sh
    ./install_mac.sh
    ```
+   The installer enables CEP debug mode for CSXS 11 and CSXS 12 so the extension can load in supported Premiere Pro versions.
 
 4. Restart Adobe Premiere Pro
 
