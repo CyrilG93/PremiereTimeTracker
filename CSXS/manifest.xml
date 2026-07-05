@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.cyrilg93.timetracker" ExtensionBundleVersion="1.3.0"
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.cyrilg93.timetracker" ExtensionBundleVersion="1.3.1"
                    ExtensionBundleName="Time Tracker" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Author>
     <![CDATA[Time Tracker Extension]]>
@@ -8,11 +8,11 @@
   <Legal>
     <![CDATA[Track time spent on Premiere Pro projects.]]>
   </Legal>
-  <Abstract href="https://example.com">
+  <Abstract href="https://www.cyrilplugin.com/time-tracker">
     <![CDATA[Automatically track and export time spent on projects.]]>
   </Abstract>
   <ExtensionList>
-    <Extension Id="com.cyrilg93.timetracker.panel" Version="1.3.0"/>
+    <Extension Id="com.cyrilg93.timetracker.panel" Version="1.3.1"/>
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>
