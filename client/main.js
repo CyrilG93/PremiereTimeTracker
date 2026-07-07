@@ -3,7 +3,7 @@
  * Tracks time spent on projects and exports to CSV
  * 
  * @author CyrilG93
- * @version 1.3.1
+ * @version 1.3.2
  */
 
 // CSInterface wrapper for communication with Premiere Pro
@@ -85,7 +85,101 @@ var activityCheckInterval = null;
 // ============================================================================
 const GITHUB_REPO = 'CyrilG93/PremiereTimeTracker';
 const PRODUCT_PAGE_URL = 'https://www.cyrilplugin.com/time-tracker';
-let CURRENT_VERSION = '1.3.1';
+const CEP_THEME_COLOR_CHANGED_EVENT = 'com.adobe.csxs.events.ThemeColorChanged';
+let CURRENT_VERSION = '1.3.2';
+let premiereThemeListenerBound = false;
+
+// Clamp Adobe CEP RGB values before using them as CSS variables.
+function clampColorChannel(value) {
+    return Math.max(0, Math.min(255, Math.round(Number(value) || 0)));
+}
+
+// Read a CEP UIColor object in both direct and nested `.color` shapes.
+function normalizeCepColor(color) {
+    var source = color && color.color ? color.color : color;
+    if (!source) {
+        return { red: 35, green: 35, blue: 35 };
+    }
+    return {
+        red: clampColorChannel(source.red),
+        green: clampColorChannel(source.green),
+        blue: clampColorChannel(source.blue)
+    };
+}
+
+// Convert an RGB object to a CSS rgb() string.
+function colorToRgb(color) {
+    return 'rgb(' + color.red + ', ' + color.green + ', ' + color.blue + ')';
+}
+
+// Lighten or darken a color while preserving the host theme direction.
+function shiftColor(color, amount) {
+    var factor = Math.abs(amount);
+    return {
+        red: clampColorChannel(amount >= 0 ? color.red + (255 - color.red) * factor : color.red * (1 - factor)),
+        green: clampColorChannel(amount >= 0 ? color.green + (255 - color.green) * factor : color.green * (1 - factor)),
+        blue: clampColorChannel(amount >= 0 ? color.blue + (255 - color.blue) * factor : color.blue * (1 - factor))
+    };
+}
+
+// Estimate brightness to choose readable text colors for dark and light Premiere themes.
+function colorLuminance(color) {
+    return (0.2126 * color.red + 0.7152 * color.green + 0.0722 * color.blue) / 255;
+}
+
+// Read Premiere's current panel background color from CEP.
+function getPremierePanelColor() {
+    try {
+        if (window.__adobe_cep__ && typeof window.__adobe_cep__.getHostEnvironment === 'function') {
+            var hostEnvironment = JSON.parse(window.__adobe_cep__.getHostEnvironment());
+            if (hostEnvironment && hostEnvironment.appSkinInfo && hostEnvironment.appSkinInfo.panelBackgroundColor) {
+                return normalizeCepColor(hostEnvironment.appSkinInfo.panelBackgroundColor);
+            }
+        }
+    } catch (e) {
+        console.error('[Theme] Error reading Premiere theme:', e);
+    }
+    return normalizeCepColor(null);
+}
+
+// Publish Premiere theme colors as CSS variables consumed by the panel styles.
+function applyPremierePanelTheme() {
+    var background = getPremierePanelColor();
+    var isLightTheme = colorLuminance(background) > 0.55;
+    var surface = shiftColor(background, isLightTheme ? -0.06 : 0.10);
+    var input = shiftColor(background, isLightTheme ? 0.05 : -0.08);
+    var hover = shiftColor(background, isLightTheme ? -0.10 : 0.18);
+    var border = shiftColor(background, isLightTheme ? -0.22 : 0.26);
+    var textPrimary = isLightTheme ? { red: 28, green: 28, blue: 28 } : { red: 224, green: 224, blue: 224 };
+    var textMuted = isLightTheme ? { red: 88, green: 88, blue: 88 } : { red: 158, green: 158, blue: 158 };
+    var accent = isLightTheme ? { red: 0, green: 103, blue: 204 } : { red: 74, green: 158, blue: 255 };
+    var accentSoft = isLightTheme ? { red: 218, green: 238, blue: 255 } : { red: 36, green: 64, blue: 87 };
+    var root = document.documentElement;
+
+    root.setAttribute('data-premiere-theme', isLightTheme ? 'light' : 'dark');
+    root.style.setProperty('--panel-bg', colorToRgb(background));
+    root.style.setProperty('--panel-surface', colorToRgb(surface));
+    root.style.setProperty('--panel-input', colorToRgb(input));
+    root.style.setProperty('--panel-hover', colorToRgb(hover));
+    root.style.setProperty('--panel-border', colorToRgb(border));
+    root.style.setProperty('--panel-border-strong', colorToRgb(shiftColor(border, isLightTheme ? -0.10 : 0.12)));
+    root.style.setProperty('--panel-text', colorToRgb(textPrimary));
+    root.style.setProperty('--panel-text-muted', colorToRgb(textMuted));
+    root.style.setProperty('--panel-text-dim', colorToRgb(shiftColor(textMuted, isLightTheme ? 0.20 : -0.22)));
+    root.style.setProperty('--panel-accent', colorToRgb(accent));
+    root.style.setProperty('--panel-accent-soft', colorToRgb(accentSoft));
+    root.style.setProperty('--panel-accent-soft-text', isLightTheme ? '#063d6b' : '#cbe8ff');
+    root.style.setProperty('--panel-shadow', 'rgba(0, 0, 0, ' + (isLightTheme ? '0.18' : '0.45') + ')');
+}
+
+// Keep the panel synced when the user changes Premiere's appearance while the CEP panel is open.
+function bindPremiereThemeListener() {
+    if (premiereThemeListenerBound || !csInterface || typeof csInterface.addEventListener !== 'function') {
+        return;
+    }
+    premiereThemeListenerBound = true;
+    csInterface.addEventListener(CEP_THEME_COLOR_CHANGED_EVENT, applyPremierePanelTheme);
+}
 
 // Open product and update links through CEP, with a browser fallback for local testing.
 function openExternalUrl(url) {
@@ -218,6 +312,9 @@ function loadFallbackTranslations(fs, fallbackPath, updateMessages, selectedLang
  * Initialize the extension
  */
 function init() {
+    applyPremierePanelTheme();
+    bindPremiereThemeListener();
+
     timeDisplay = document.getElementById('timeDisplay');
     projectName = document.getElementById('projectName');
     totalTime = document.getElementById('totalTime');

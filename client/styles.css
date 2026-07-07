@@ -7,10 +7,26 @@
     box-sizing: border-box;
 }
 
+:root {
+    --panel-bg: #232323;
+    --panel-surface: #2d2d2d;
+    --panel-input: #1a1a1a;
+    --panel-hover: #3a3a3a;
+    --panel-border: #444444;
+    --panel-border-strong: #555555;
+    --panel-text: #e0e0e0;
+    --panel-text-muted: #999999;
+    --panel-text-dim: #666666;
+    --panel-accent: #0099ff;
+    --panel-accent-soft: #244057;
+    --panel-accent-soft-text: #cbe8ff;
+    --panel-shadow: rgba(0, 0, 0, 0.45);
+}
+
 body {
     font-family: 'Segoe UI', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #232323;
-    color: #e0e0e0;
+    background-color: var(--panel-bg);
+    color: var(--panel-text);
     font-size: 11px;
     overflow: hidden;
 }
@@ -51,9 +67,9 @@ body {
 /* Version Badge */
 .version-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #444;
-    color: #aaa;
+    background: var(--panel-surface);
+    border: 1px solid var(--panel-border);
+    color: var(--panel-text-muted);
     font-size: 11px;
     padding: 2px 6px;
     border-radius: 4px;
@@ -86,7 +102,7 @@ body {
 .title {
     font-size: 11px;
     font-weight: 600;
-    color: #999;
+    color: var(--panel-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -99,7 +115,7 @@ body {
 .icon-btn {
     background: transparent;
     border: none;
-    color: #888;
+    color: var(--panel-text-muted);
     cursor: pointer;
     padding: 2px;
     border-radius: 2px;
@@ -110,8 +126,8 @@ body {
 }
 
 .icon-btn:hover {
-    background: #3a3a3a;
-    color: #fff;
+    background: var(--panel-hover);
+    color: var(--panel-text);
 }
 
 /* Main Display */
@@ -149,7 +165,7 @@ body {
     font-size: 12px;
     font-weight: 500;
     font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
-    color: #666;
+    color: var(--panel-text-dim);
     letter-spacing: 0.5px;
 }
 
@@ -168,7 +184,7 @@ body {
 
 .project-name {
     font-size: 10px;
-    color: #888;
+    color: var(--panel-text-muted);
     text-align: center;
     max-width: 100%;
     overflow: hidden;
@@ -189,9 +205,9 @@ body {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-    border: 1px solid #444;
-    color: #e0e0e0;
+    background: linear-gradient(180deg, var(--panel-hover) 0%, var(--panel-surface) 100%);
+    border: 1px solid var(--panel-border);
+    color: var(--panel-text);
     padding: 3px 8px;
     height: 22px;
     border-radius: 3px;
@@ -202,8 +218,8 @@ body {
 }
 
 .export-btn:hover {
-    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
-    border-color: #555;
+    background: linear-gradient(180deg, var(--panel-hover) 0%, var(--panel-input) 100%);
+    border-color: var(--panel-border-strong);
 }
 
 .export-btn:active {
@@ -215,9 +231,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-    border: 1px solid #444;
-    color: #888;
+    background: linear-gradient(180deg, var(--panel-hover) 0%, var(--panel-surface) 100%);
+    border: 1px solid var(--panel-border);
+    color: var(--panel-text-muted);
     padding: 5px 8px;
     border-radius: 3px;
     cursor: pointer;
@@ -241,7 +257,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: #232323;
+    background: var(--panel-bg);
     display: none;
     flex-direction: column;
     padding: 6px;
@@ -257,13 +273,13 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 6px;
-    border-bottom: 1px solid #3a3a3a;
+    border-bottom: 1px solid var(--panel-border);
     margin-bottom: 6px;
 }
 
 .settings-header span {
     font-weight: 600;
-    color: #aaa;
+    color: var(--panel-text-muted);
     font-size: 12px;
 }
 
@@ -283,7 +299,7 @@ body {
 
 .setting-row label {
     font-size: 11px;
-    color: #999;
+    color: var(--panel-text-muted);
     flex: 1;
 }
 
@@ -291,10 +307,10 @@ body {
 .setting-row select {
     width: 60px;
     padding: 4px 6px;
-    background: #1a1a1a;
-    border: 1px solid #3a3a3a;
+    background: var(--panel-input);
+    border: 1px solid var(--panel-border);
     border-radius: 2px;
-    color: #e0e0e0;
+    color: var(--panel-text);
     font-size: 11px;
 }
 
@@ -306,7 +322,7 @@ body {
 .setting-row input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #0099ff;
+    accent-color: var(--panel-accent);
 }
 
 .danger-btn {
@@ -384,8 +400,8 @@ body {
     left: 0;
     right: 0;
     height: 120px;
-    background-color: #1a1a1a;
-    border-top: 1px solid #444;
+    background-color: var(--panel-input);
+    border-top: 1px solid var(--panel-border);
     flex-direction: column;
     z-index: 100;
 }
@@ -399,10 +415,10 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 4px 8px;
-    background-color: #2a2a2a;
-    border-bottom: 1px solid #333;
+    background-color: var(--panel-surface);
+    border-bottom: 1px solid var(--panel-border);
     font-size: 10px;
-    color: #888;
+    color: var(--panel-text-muted);
 }
 
 .log-content {
@@ -416,7 +432,7 @@ body {
 
 .log-entry {
     margin-bottom: 2px;
-    color: #aaa;
+    color: var(--panel-text-muted);
 }
 
 .log-entry.info {
@@ -432,14 +448,14 @@ body {
 }
 
 .log-entry .log-time {
-    color: #666;
+    color: var(--panel-text-dim);
     margin-right: 6px;
 }
 
 /* CSV Columns Configuration */
 .csv-config-section {
     margin-top: 8px;
-    border: 1px solid #444;
+    border: 1px solid var(--panel-border);
     border-radius: 4px;
     overflow: visible;
 }
@@ -449,13 +465,13 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 6px 8px;
-    background: #2a2a2a;
+    background: var(--panel-surface);
     cursor: pointer;
     font-size: 12px;
 }
 
 .csv-config-header:hover {
-    background: #333;
+    background: var(--panel-hover);
 }
 
 .toggle-arrow {
@@ -466,7 +482,7 @@ body {
 .csv-config-content {
     display: none;
     overflow: visible;
-    background: #1a1a1a;
+    background: var(--panel-input);
 }
 
 .csv-config-content.show {
@@ -477,15 +493,15 @@ body {
     display: flex;
     gap: 4px;
     padding: 6px;
-    border-bottom: 1px solid #333;
-    background: #202020;
+    border-bottom: 1px solid var(--panel-border);
+    background: var(--panel-bg);
 }
 
 .csv-config-btn {
     flex: 1;
-    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-    border: 1px solid #444;
-    color: #ddd;
+    background: linear-gradient(180deg, var(--panel-hover) 0%, var(--panel-surface) 100%);
+    border: 1px solid var(--panel-border);
+    color: var(--panel-text);
     border-radius: 2px;
     cursor: pointer;
     font-size: 10px;
@@ -494,8 +510,8 @@ body {
 }
 
 .csv-config-btn:hover {
-    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
-    border-color: #555;
+    background: linear-gradient(180deg, var(--panel-hover) 0%, var(--panel-input) 100%);
+    border-color: var(--panel-border-strong);
 }
 
 .csv-config-file-input {
@@ -506,8 +522,8 @@ body {
     display: flex;
     gap: 4px;
     padding: 6px;
-    border-bottom: 1px solid #333;
-    background: #1f1f1f;
+    border-bottom: 1px solid var(--panel-border);
+    background: var(--panel-bg);
 }
 
 .csv-preset-input {
@@ -515,10 +531,10 @@ body {
     min-width: 0;
     padding: 4px 6px;
     font-size: 10px;
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background: var(--panel-surface);
+    border: 1px solid var(--panel-border);
     border-radius: 2px;
-    color: #e0e0e0;
+    color: var(--panel-text);
 }
 
 .csv-preset-save-btn {
@@ -531,10 +547,10 @@ body {
     margin: 0 6px 6px;
     padding: 4px 6px;
     font-size: 10px;
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background: var(--panel-surface);
+    border: 1px solid var(--panel-border);
     border-radius: 2px;
-    color: #e0e0e0;
+    color: var(--panel-text);
 }
 
 #csvColumnsContainer {
@@ -546,7 +562,7 @@ body {
     align-items: center;
     gap: 4px;
     padding: 3px 6px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--panel-border);
 }
 
 .csv-column-row:last-child {
@@ -557,7 +573,7 @@ body {
     width: 16px;
     font-weight: bold;
     font-size: 11px;
-    color: #888;
+    color: var(--panel-text-muted);
 }
 
 .csv-column-type-wrapper {
@@ -571,10 +587,10 @@ body {
     text-align: left;
     padding: 3px 18px 3px 5px;
     font-size: 10px;
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background: var(--panel-surface);
+    border: 1px solid var(--panel-border);
     border-radius: 2px;
-    color: #e0e0e0;
+    color: var(--panel-text);
     cursor: pointer;
     position: relative;
 }
@@ -586,7 +602,7 @@ body {
     top: 50%;
     transform: translateY(-50%);
     font-size: 7px;
-    color: #aaa;
+    color: var(--panel-text-muted);
 }
 
 .csv-column-type-menu {
@@ -595,10 +611,10 @@ body {
     right: 0;
     top: calc(100% + 2px);
     display: none;
-    background: #1f1f1f;
-    border: 1px solid #555;
+    background: var(--panel-input);
+    border: 1px solid var(--panel-border-strong);
     border-radius: 2px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 4px 10px var(--panel-shadow);
     overflow-y: auto;
     z-index: 50;
 }
@@ -619,8 +635,8 @@ body {
     font-size: 10px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid #333;
-    color: #e0e0e0;
+    border-bottom: 1px solid var(--panel-border);
+    color: var(--panel-text);
     cursor: pointer;
 }
 
@@ -629,22 +645,22 @@ body {
 }
 
 .csv-column-type-option:hover {
-    background: #2f2f2f;
+    background: var(--panel-hover);
 }
 
 .csv-column-type-option.selected {
-    background: #244057;
-    color: #cbe8ff;
+    background: var(--panel-accent-soft);
+    color: var(--panel-accent-soft-text);
 }
 
 .csv-column-value {
     width: 80px;
     padding: 3px 5px;
     font-size: 10px;
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background: var(--panel-surface);
+    border: 1px solid var(--panel-border);
     border-radius: 2px;
-    color: #e0e0e0;
+    color: var(--panel-text);
     display: none;
 }
 

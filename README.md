@@ -16,6 +16,7 @@ CEP Extension for Adobe Premiere Pro 2025 (25.5+) to track time spent on each pr
 - 🐛 **Debug logs** - Built-in log panel to diagnose issues
 - 💼 **CSV config import/export** - Save and reuse CSV column mapping on another computer
 - 🧩 **CSV presets** - Save named column setups and load them from an alphabetical dropdown
+- 🎨 **Premiere theme colors** - Panel colors follow the current Premiere Pro appearance
 - 🔗 **Version shortcut** - Click the version badge to open the Time Tracker product page
 
 ## 📦 Installation
