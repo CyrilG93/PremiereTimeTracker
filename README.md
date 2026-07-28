@@ -111,14 +111,6 @@ rmdir /s /q "%APPDATA%\Adobe\CEP\extensions\PremiereTimeTracker"
 - Adobe Premiere Pro 2025 (25.5+)
 - macOS & Windows
 
-## 👤 Author
-
-CyrilG93
-
-## 📄 License
-
-MIT License
-
 ---
 ## 📜 Changelog
 
