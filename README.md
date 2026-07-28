@@ -122,6 +122,10 @@ MIT License
 ---
 ## 📜 Changelog
 
+### 1.3.2 — July 28, 2026
+- The panel now follows the Premiere Pro appearance for a more consistent workspace.
+- Click the version badge to open the Time Tracker product page.
+
 ### 1.3.0
 - Added CSV configuration import/export to reuse setups across machines.
 - Added named CSV presets with alphabetical preset selector.
