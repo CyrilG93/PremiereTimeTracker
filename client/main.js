@@ -3,7 +3,7 @@
  * Tracks time spent on projects and exports to CSV
  * 
  * @author CyrilG93
- * @version 1.3.2
+ * @version 1.3.3
  */
 
 // CSInterface wrapper for communication with Premiere Pro
@@ -86,7 +86,7 @@ var activityCheckInterval = null;
 const GITHUB_REPO = 'CyrilG93/PremiereTimeTracker';
 const PRODUCT_PAGE_URL = 'https://www.cyrilplugin.com/time-tracker';
 const CEP_THEME_COLOR_CHANGED_EVENT = 'com.adobe.csxs.events.ThemeColorChanged';
-let CURRENT_VERSION = '1.3.2';
+let CURRENT_VERSION = '1.3.3';
 let premiereThemeListenerBound = false;
 
 // Clamp Adobe CEP RGB values before using them as CSS variables.

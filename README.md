@@ -114,6 +114,10 @@ rmdir /s /q "%APPDATA%\Adobe\CEP\extensions\PremiereTimeTracker"
 ---
 ## 📜 Changelog
 
+### 1.3.3 — October 21, 2026
+- Fixed project detection in Premiere installations where ExtendScript does not provide the JSON API.
+- Ensured the macOS installer always uses Unix line endings.
+
 ### 1.3.2 — July 28, 2026
 - The panel now follows the Premiere Pro appearance for a more consistent workspace.
 - Click the version badge to open the Time Tracker product page.

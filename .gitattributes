@@ -1,0 +1,2 @@
+# Keep the macOS shebang portable in every checkout and release archive.
+install_mac.sh text eol=lf

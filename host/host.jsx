@@ -3,8 +3,58 @@
  * Provides access to project information
  * 
  * @author CyrilG93
- * @version 1.3.2
+ * @version 1.3.3
  */
+
+/**
+ * Serializes values without assuming Premiere's ExtendScript engine provides JSON.
+ * Some Premiere installations do not expose JSON until another extension polyfills it.
+ */
+function TimeTracker_toJSON(value) {
+    // Prefer the native implementation whenever the host makes it available.
+    if (typeof JSON !== "undefined" && typeof JSON.stringify === "function") {
+        return JSON.stringify(value);
+    }
+
+    // Quote strings and escape the JSON control characters used by project metadata.
+    if (typeof value === "string") {
+        return '"' + value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\f/g, "\\f").replace(/\x08/g, "\\b") + '"';
+    }
+
+    // Preserve valid primitive JSON representations.
+    if (value === null) {
+        return "null";
+    }
+    if (typeof value === "number") {
+        return isFinite(value) ? String(value) : "null";
+    }
+    if (typeof value === "boolean") {
+        return value ? "true" : "false";
+    }
+
+    // Serialize arrays recursively for future host responses.
+    if (value instanceof Array) {
+        var arrayValues = [];
+        for (var i = 0; i < value.length; i++) {
+            arrayValues.push(TimeTracker_toJSON(value[i]));
+        }
+        return "[" + arrayValues.join(",") + "]";
+    }
+
+    // Serialize the plain response objects sent back to the CEP panel.
+    if (typeof value === "object") {
+        var properties = [];
+        for (var key in value) {
+            if (value.hasOwnProperty(key)) {
+                properties.push(TimeTracker_toJSON(key) + ":" + TimeTracker_toJSON(value[key]));
+            }
+        }
+        return "{" + properties.join(",") + "}";
+    }
+
+    // Unsupported ExtendScript values cannot be represented in JSON.
+    return "null";
+}
 
 /**
  * Get current project information
@@ -22,7 +72,7 @@ function TimeTracker_getProjectInfo() {
         debugInfo.push("app.project exists: " + (app && typeof app.project !== 'undefined'));
 
         if (!app || !app.project) {
-            return JSON.stringify({
+            return TimeTracker_toJSON({
                 isOpen: false,
                 path: "",
                 fileName: "",
@@ -54,7 +104,7 @@ function TimeTracker_getProjectInfo() {
         var hasProject = (projectPath.length > 0) || (projectName.length > 0);
 
         if (!hasProject) {
-            return JSON.stringify({
+            return TimeTracker_toJSON({
                 isOpen: false,
                 path: "",
                 fileName: "",
@@ -125,7 +175,7 @@ function TimeTracker_getProjectInfo() {
             fullLocation = locationParts.join("/");
         }
 
-        return JSON.stringify({
+        return TimeTracker_toJSON({
             isOpen: true,
             path: projectPath,
             fileName: fileName,
@@ -134,7 +184,7 @@ function TimeTracker_getProjectInfo() {
         });
 
     } catch (e) {
-        return JSON.stringify({
+        return TimeTracker_toJSON({
             isOpen: false,
             path: "",
             fileName: "",
